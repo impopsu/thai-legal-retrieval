@@ -1,0 +1,59 @@
+cat > .gitignore <<'EOF'
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+
+# Model files
+*.bin
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+
+# Large generated files
+*.npy
+*.npz
+*.pkl
+
+# Local indexes / caches
+.faiss/
+*.index
+
+# Dataset files
+*.parquet
+*.csv
+
+# Temporary files
+tmp/
+temp/
+EOF
