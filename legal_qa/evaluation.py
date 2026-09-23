@@ -25,22 +25,39 @@ def metrics_from_rankings(rankings, positive_indices, ks=(1, 3, 5)):
     }
 
 
-def evaluate_hybrid_batch(retriever, questions, alpha, ks=(1, 3, 5)):
-    rows = list(questions)
+def _positive_indices(retriever, rows):
     document_indices = {
         document.unique_key: index
         for index, document in enumerate(retriever.documents)
     }
-    positive_indices = [
+    return [
         [document_indices[str(item["unique_key"])] for item in row["positive_contexts"]]
         for row in rows
     ]
+
+
+def evaluate_score_matrix(retriever, rows, scores, ks=(1, 3, 5)):
+    rankings = scores.argsort(axis=1)[:, ::-1]
+    return metrics_from_rankings(
+        rankings,
+        _positive_indices(retriever, rows),
+        ks=ks,
+    )
+
+
+def evaluate_semantic_batch(retriever, questions, ks=(1, 3, 5)):
+    rows = list(questions)
+    scores = retriever.score_many([row["question"] for row in rows])
+    return evaluate_score_matrix(retriever, rows, scores, ks=ks)
+
+
+def evaluate_hybrid_batch(retriever, questions, alpha, ks=(1, 3, 5)):
+    rows = list(questions)
     bm25_scores, semantic_scores = retriever.score_many(
         [row["question"] for row in rows]
     )
     hybrid_scores = alpha * bm25_scores + (1 - alpha) * semantic_scores
-    rankings = hybrid_scores.argsort(axis=1)[:, ::-1]
-    return metrics_from_rankings(rankings, positive_indices, ks=ks)
+    return evaluate_score_matrix(retriever, rows, hybrid_scores, ks=ks)
 
 
 def evaluate_reranker(

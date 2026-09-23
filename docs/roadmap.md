@@ -43,6 +43,14 @@ Select `alpha` using validation:
 python scripts/select_alpha.py
 ```
 
+Compare retrieval methods on validation:
+
+```bash
+python scripts/benchmark_retrievers.py \
+	--split validation \
+	--methods bm25 minilm hybrid_minilm
+```
+
 Run the final test evaluation with the selected alpha. Do not use this command
 to tune parameters:
 

@@ -23,6 +23,14 @@ explicitly supplied.
 python scripts/evaluate_retrieval.py --methods bm25
 ```
 
+Compare retrievers on validation using one protocol:
+
+```bash
+python scripts/benchmark_retrievers.py \
+	--split validation \
+	--methods bm25 minilm hybrid_minilm
+```
+
 To evaluate the hybrid retriever and cache MiniLM document embeddings:
 
 ```bash
@@ -49,3 +57,5 @@ text-to-text model for answer generation.
 See [docs/roadmap.md](docs/roadmap.md) for scope, metrics and next milestones.
 See [docs/dataset.md](docs/dataset.md) for dataset source, papers and the
 untouched-test evaluation protocol.
+See [docs/p0-status.md](docs/p0-status.md) for the current retrieval benchmark
+and remaining blockers.
