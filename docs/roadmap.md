@@ -9,19 +9,25 @@ scripts in `experiments/` for reproducible comparisons. The main convention is:
 hybrid_score = alpha * normalized_bm25 + (1 - alpha) * normalized_semantic
 ```
 
-The default production-friendly retriever is multilingual MiniLM because BGE-M3
-is expensive to run on CPU. BGE-M3 remains an experiment and comparison model.
+No retrieval method is selected as the final system yet. BM25, Hybrid MiniLM,
+BGE-M3 and Hybrid BGE-M3 must be benchmarked under the same validation/test
+protocol before choosing the main retriever. Runtime and memory are reported
+alongside retrieval quality because BGE-M3 is expensive on CPU.
 
 ## Milestones
 
-1. Retrieval baseline: BM25, semantic search, hybrid search, Recall@k and MRR@k.
-2. Evidence pipeline: return ranked legal documents with law title and section.
-3. Grounded QA: generate an answer only from retrieved evidence and include citations.
-4. QA evaluation: measure answer correctness, citation correctness and faithfulness.
-5. Demo: expose the pipeline through a CLI or web interface.
+1. Retrieval benchmark: compare BM25, Hybrid MiniLM, BGE-M3 and Hybrid BGE-M3.
+2. Reranker benchmark: rerank the same candidate set and compare against the
+	selected retrieval baselines on validation.
+3. Final method selection: choose retrieval and reranker using validation only.
+4. Evidence pipeline: return ranked legal documents with law title and section.
+5. Grounded QA: generate an answer only from retrieved evidence and include citations.
+6. QA evaluation: measure answer correctness, citation correctness and faithfulness.
+7. Demo: expose the selected pipeline through a CLI or web interface.
 
-Reranking must be selected and evaluated on validation before it is included
-in a final test configuration.
+Reranking is a core experiment for improving the basic similarity-based
+retrieval. It must be evaluated on validation before it is included in a final
+test configuration; it is not treated as optional by design.
 
 ## Current evaluation commands
 

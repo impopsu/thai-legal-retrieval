@@ -1,12 +1,14 @@
 # Thai Legal QA
 
 Thai legal retrieval and grounded question answering using BM25, multilingual
-semantic search and hybrid retrieval.
+semantic search, hybrid retrieval and reranking.
 
 ## Current status
 
 The reusable core is in `legal_qa/`. Original experiments remain in `experiments/`
-for comparison. The default retrieval convention is:
+for comparison. No retrieval method is selected as the final production method
+yet; BM25, Hybrid MiniLM, BGE-M3 and Hybrid BGE-M3 must be compared under the
+same evaluation protocol first. The hybrid score convention is:
 
 ```text
 hybrid_score = alpha * normalized_bm25 + (1 - alpha) * normalized_semantic
