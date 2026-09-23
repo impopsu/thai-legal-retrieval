@@ -10,7 +10,7 @@ from legal_qa import BM25Retriever, HybridRetriever, load_documents
 from legal_qa.evaluation import (
     evaluate_hybrid_batch,
     evaluate_retrieval,
-    evaluate_reranker,
+    evaluate_reranker_batch,
 )
 from legal_qa.reranking import CrossEncoderReranker
 
@@ -33,6 +33,8 @@ def main() -> None:
     )
     parser.add_argument("--candidate-k", type=int, default=20)
     parser.add_argument("--top-k", type=int, default=5)
+    parser.add_argument("--batch-size", type=int, default=8)
+    parser.add_argument("--query-batch-size", type=int, default=4)
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument(
         "--output",
@@ -55,7 +57,7 @@ def main() -> None:
             embeddings_path=args.embeddings,
         )
 
-    reranker = CrossEncoderReranker(args.model)
+    reranker = CrossEncoderReranker(args.model, batch_size=args.batch_size)
     if args.retriever == "hybrid":
         baseline_metrics = evaluate_hybrid_batch(
             retriever,
@@ -64,12 +66,13 @@ def main() -> None:
         )
     else:
         baseline_metrics = evaluate_retrieval(retriever, rows)
-    metrics = evaluate_reranker(
+    metrics = evaluate_reranker_batch(
         retriever,
         reranker,
         rows,
         candidate_k=args.candidate_k,
         top_k=args.top_k,
+        query_batch_size=args.query_batch_size,
     )
     print("baseline:", baseline_metrics)
     print("reranked:", metrics)

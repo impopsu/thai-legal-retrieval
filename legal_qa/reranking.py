@@ -32,3 +32,10 @@ class CrossEncoderReranker:
             for result, score in zip(results, scores)
         ]
         return sorted(reranked, key=lambda result: result.score, reverse=True)[:top_k]
+
+    def score_pairs(self, pairs):
+        return self.model.predict(
+            pairs,
+            batch_size=self.batch_size,
+            show_progress_bar=True,
+        )
