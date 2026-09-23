@@ -40,6 +40,34 @@ def evaluate_hybrid_batch(retriever, questions, alpha, ks=(1, 3, 5)):
     return metrics_from_rankings(rankings, positive_indices, ks=ks)
 
 
+def evaluate_reranker(
+    retriever,
+    reranker,
+    questions: Iterable[pd.Series],
+    candidate_k: int = 20,
+    top_k: int = 5,
+    ks=(1, 3, 5),
+):
+    rows = list(questions)
+    document_indices = {
+        document.unique_key: index
+        for index, document in enumerate(retriever.documents)
+    }
+    positive_indices = [
+        [document_indices[str(item["unique_key"])] for item in row["positive_contexts"]]
+        for row in rows
+    ]
+    rankings = []
+    for row in rows:
+        candidates = retriever.search(row["question"], top_k=candidate_k)
+        reranked = reranker.rerank(row["question"], candidates, top_k=top_k)
+        rankings.append([
+            document_indices[result.document.unique_key]
+            for result in reranked
+        ])
+    return metrics_from_rankings(rankings, positive_indices, ks=ks)
+
+
 def evaluate_retrieval(retriever, questions: Iterable[pd.Series], ks=(1, 3, 5)):
     rows = list(questions)
     if not rows:

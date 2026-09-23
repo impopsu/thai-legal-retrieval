@@ -27,6 +27,13 @@ To evaluate the hybrid retriever and cache MiniLM document embeddings:
 python scripts/evaluate_retrieval.py --methods bm25 hybrid --alpha 0.5
 ```
 
+Evaluate an optional cross-encoder reranker on validation data:
+
+```bash
+python scripts/evaluate_reranker.py \
+	--model cross-encoder/mmarco-mMiniLMv2-L12-H384-v1
+```
+
 ## Run the QA demo
 
 ```bash

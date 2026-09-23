@@ -20,6 +20,9 @@ is expensive to run on CPU. BGE-M3 remains an experiment and comparison model.
 4. QA evaluation: measure answer correctness, citation correctness and faithfulness.
 5. Demo: expose the pipeline through a CLI or web interface.
 
+Reranking must be selected and evaluated on validation before it is included
+in a final test configuration.
+
 ## Current evaluation commands
 
 Create validation data from the training split only:
