@@ -6,7 +6,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from legal_qa import HybridRetriever, evaluate_retrieval, load_documents
+from legal_qa import HybridRetriever, load_documents
 
 
 def main() -> None:
@@ -32,11 +32,23 @@ def main() -> None:
         "--output",
         default="results/validation_alpha_results.csv",
     )
+    parser.add_argument("--limit", type=int, default=0)
     args = parser.parse_args()
 
     documents = load_documents(args.documents)
     validation = pd.read_parquet(args.validation)
+    if args.limit > 0:
+        validation = validation.head(args.limit)
     rows = [row for _, row in validation.iterrows()]
+    questions = validation["question"].fillna("").tolist()
+    document_indices = {
+        document.unique_key: index
+        for index, document in enumerate(documents)
+    }
+    positive_indices = [
+        [document_indices[str(item["unique_key"])] for item in row["positive_contexts"]]
+        for row in rows
+    ]
     results = []
     retriever = HybridRetriever(
         documents,
@@ -44,9 +56,29 @@ def main() -> None:
         embeddings_path=args.embeddings,
     )
 
+    bm25_scores, semantic_scores = retriever.score_many(questions)
+
     for alpha in args.alphas:
-        retriever.alpha = alpha
-        metrics = evaluate_retrieval(retriever, rows)
+        hybrid_scores = alpha * bm25_scores + (1 - alpha) * semantic_scores
+        rankings = hybrid_scores.argsort(axis=1)[:, ::-1]
+        recall_counts = {k: 0 for k in (1, 3, 5)}
+        reciprocal_rank_sum = 0.0
+
+        for ranking, positives in zip(rankings, positive_indices):
+            positive_set = set(positives)
+            for k in recall_counts:
+                if positive_set.intersection(ranking[:k]):
+                    recall_counts[k] += 1
+            for rank, index in enumerate(ranking[:5], start=1):
+                if index in positive_set:
+                    reciprocal_rank_sum += 1 / rank
+                    break
+
+        total = len(rows)
+        metrics = {
+            **{f"Recall@{k}": count / total for k, count in recall_counts.items()},
+            "MRR@5": reciprocal_rank_sum / total,
+        }
         results.append({"alpha": alpha, **metrics})
         print(f"alpha={alpha}: {metrics}")
 

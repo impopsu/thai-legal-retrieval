@@ -21,6 +21,18 @@ def normalize(scores: np.ndarray) -> np.ndarray:
     return (scores - minimum) / (maximum - minimum)
 
 
+def normalize_rows(scores: np.ndarray) -> np.ndarray:
+    minimum = scores.min(axis=1, keepdims=True)
+    maximum = scores.max(axis=1, keepdims=True)
+    spread = maximum - minimum
+    return np.divide(
+        scores - minimum,
+        spread,
+        out=np.zeros_like(scores, dtype=float),
+        where=spread != 0,
+    )
+
+
 class BM25Retriever:
     def __init__(self, documents: Sequence[LegalDocument]):
         self.documents = list(documents)
@@ -28,6 +40,9 @@ class BM25Retriever:
 
     def score(self, query: str) -> np.ndarray:
         return np.asarray(self.index.get_scores(tokenize(query)), dtype=float)
+
+    def score_many(self, queries: Sequence[str]) -> np.ndarray:
+        return np.vstack([self.score(query) for query in queries])
 
     def search(self, query: str, top_k: int = 5) -> list[SearchResult]:
         scores = self.score(query)
@@ -75,6 +90,16 @@ class SemanticRetriever:
         )
         return (query_embedding @ self.document_embeddings.T)[0].detach().cpu().numpy()
 
+    def score_many(self, queries: Sequence[str]) -> np.ndarray:
+        query_embeddings = self.model.encode(
+            list(queries),
+            batch_size=self.batch_size,
+            convert_to_tensor=True,
+            normalize_embeddings=True,
+            show_progress_bar=True,
+        )
+        return (query_embeddings @ self.document_embeddings.T).detach().cpu().numpy()
+
     def search(self, query: str, top_k: int = 5) -> list[SearchResult]:
         scores = self.score(query)
         indices = np.argsort(scores)[::-1][:top_k]
@@ -118,3 +143,8 @@ class HybridRetriever:
             )
             for i in indices
         ]
+
+    def score_many(self, queries: Sequence[str]) -> tuple[np.ndarray, np.ndarray]:
+        bm25_scores = normalize_rows(self.bm25.score_many(queries))
+        semantic_scores = normalize_rows(self.semantic.score_many(queries))
+        return bm25_scores, semantic_scores

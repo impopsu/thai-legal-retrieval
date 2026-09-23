@@ -7,6 +7,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from legal_qa import BM25Retriever, HybridRetriever, evaluate_retrieval, load_documents
+from legal_qa.evaluation import evaluate_hybrid_batch
 
 
 def parse_args() -> argparse.Namespace:
@@ -53,10 +54,11 @@ def main() -> None:
                 embeddings_path=args.embeddings,
             )
 
-        metrics = evaluate_retrieval(
-            retriever,
-            (row for _, row in test.iterrows()),
-        )
+        rows = [row for _, row in test.iterrows()]
+        if method == "hybrid":
+            metrics = evaluate_hybrid_batch(retriever, rows, alpha=args.alpha)
+        else:
+            metrics = evaluate_retrieval(retriever, rows)
         results.append({"method": method, "alpha": args.alpha, **metrics})
         print(f"\n{method}")
         for name, value in metrics.items():
