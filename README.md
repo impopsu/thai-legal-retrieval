@@ -67,3 +67,9 @@ When generated answers are available as JSONL, evaluate them with:
 ```bash
 python scripts/evaluate_answers.py --predictions results/qa_predictions.jsonl
 ```
+
+Export grounded prompts for an external or future LLM:
+
+```bash
+python scripts/export_qa_prompts.py --limit 100
+```

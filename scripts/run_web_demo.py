@@ -28,7 +28,7 @@ pre { white-space: pre-wrap; background: #f4f4f4; padding: 1rem; }
 </head>
 <body>
 <h1>Thai Legal QA</h1>
-<p>ระบบค้น evidence กฎหมายและสร้าง grounded prompt</p>
+<p>ระบบค้น evidence กฎหมาย จัดอันดับ และเตรียม grounded prompt</p>
 <textarea id="question" placeholder="เช่น ถ้าขโมยของคนอื่น มีความผิดอะไร"></textarea>
 <br><button onclick="ask()">ค้นหาข้อมูล</button>
 <h2>ผลลัพธ์</h2><div id="output"></div>
@@ -42,10 +42,12 @@ async function ask() {
   const data = await response.json();
   const output = document.getElementById('output');
   if (data.error) { output.textContent = data.error; return; }
-  output.innerHTML = '<h3>Grounded prompt</h3><pre>' + data.prompt + '</pre>' +
-    '<h3>แหล่งข้อมูล</h3>' + data.sources.map(source =>
-      '<div class="source"><b>' + source.law_title + ' มาตรา ' + source.section +
-      '</b><p>' + source.context + '</p></div>').join('');
+    output.innerHTML = '<h3>สถานะคำตอบ</h3><p>' + data.answer_status + '</p>' +
+        '<h3>แหล่งข้อมูล</h3>' + data.sources.map(source =>
+            '<div class="source"><b>' + source.citation + '</b>' +
+            '<p>คะแนน: ' + source.score.toFixed(4) + '</p>' +
+            '<p>' + source.context + '</p></div>').join('') +
+        '<h3>Grounded prompt</h3><pre>' + data.prompt + '</pre>';
 }
 </script>
 </body></html>"""
@@ -76,9 +78,19 @@ def make_handler(pipeline):
                 return
             response = pipeline.answer(question, top_k=5)
             self._json({
+                "answer": response.answer,
+                "answer_status": (
+                    "ยังไม่ได้เชื่อม LLM generator; แสดง evidence และ prompt แทน"
+                    if response.answer is None
+                    else "สร้างคำตอบจาก grounded context แล้ว"
+                ),
                 "prompt": response.prompt,
                 "sources": [
                     {
+                        "citation": (
+                            f"{result.document.law_title} "
+                            f"มาตรา {result.document.section}"
+                        ),
                         "law_title": result.document.law_title,
                         "section": result.document.section,
                         "context": result.document.context,
