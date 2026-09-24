@@ -75,3 +75,23 @@ Export grounded prompts for an external or future LLM:
 ```bash
 python scripts/export_qa_prompts.py --limit 100
 ```
+
+Generate answers with Gemini. Set `GEMINI_API_KEY` directly in the terminal;
+never put it in a file or command-line argument:
+
+```bash
+python scripts/export_qa_prompts.py \
+	--questions data/processed/validation_retrieval.parquet \
+	--limit 100 \
+	--output results/qa_prompts_validation_100.jsonl
+
+python scripts/generate_gemini_answers.py \
+	--input results/qa_prompts_validation_100.jsonl \
+	--output results/qa_predictions_validation_100.jsonl \
+	--model gemini-3.1-pro-preview
+
+python scripts/evaluate_answers.py \
+	--predictions results/qa_predictions_validation_100.jsonl \
+	--references data/processed/validation_retrieval.parquet \
+	--output results/answer_metrics_validation_100.csv
+```

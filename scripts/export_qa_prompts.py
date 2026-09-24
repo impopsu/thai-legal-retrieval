@@ -20,7 +20,9 @@ def main() -> None:
     )
     parser.add_argument("--documents", default="data/processed/legal_documents.csv")
     parser.add_argument(
+        "--questions",
         "--validation",
+        dest="questions",
         default="data/processed/validation_retrieval.parquet",
     )
     parser.add_argument("--limit", type=int, default=100)
@@ -38,7 +40,7 @@ def main() -> None:
     args = parser.parse_args()
 
     documents = load_documents(args.documents)
-    validation = pd.read_parquet(args.validation).head(args.limit)
+    validation = pd.read_parquet(args.questions).head(args.limit)
     retriever = HybridRetriever(
         documents,
         alpha=args.alpha,

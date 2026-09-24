@@ -8,6 +8,7 @@ rank-bm25
 torch
 transformers
 sentence-transformers
+google-genai
 
 tqdm
 matplotlib
