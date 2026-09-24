@@ -29,6 +29,10 @@ Answer-level evaluation is implemented but requires generated answers in JSONL;
 the project intentionally does not fabricate answer metrics before an LLM or
 another generator is selected.
 
+The project is report-ready for retrieval and grounded-prompt experiments. A
+real answer-quality result still requires selecting a generator and collecting
+human judgments using `docs/human-evaluation.md`.
+
 Reranking is a core experiment for improving the basic similarity-based
 retrieval. It must be evaluated on validation before it is included in a final
 test configuration; it is not treated as optional by design.

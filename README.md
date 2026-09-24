@@ -61,6 +61,8 @@ See [docs/dataset.md](docs/dataset.md) for dataset source, papers and the
 untouched-test evaluation protocol.
 See [docs/p0-status.md](docs/p0-status.md) for the current retrieval benchmark
 and remaining blockers.
+See [docs/human-evaluation.md](docs/human-evaluation.md) for the answer review
+rubric and [docs/reproducibility.md](docs/reproducibility.md) for setup steps.
 
 When generated answers are available as JSONL, evaluate them with:
 
