@@ -61,3 +61,9 @@ See [docs/dataset.md](docs/dataset.md) for dataset source, papers and the
 untouched-test evaluation protocol.
 See [docs/p0-status.md](docs/p0-status.md) for the current retrieval benchmark
 and remaining blockers.
+
+When generated answers are available as JSONL, evaluate them with:
+
+```bash
+python scripts/evaluate_answers.py --predictions results/qa_predictions.jsonl
+```

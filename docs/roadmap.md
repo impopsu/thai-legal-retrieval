@@ -25,6 +25,10 @@ alongside retrieval quality because BGE-M3 is expensive on CPU.
 6. QA evaluation: measure answer correctness, citation correctness and faithfulness.
 7. Demo: expose the selected pipeline through a CLI or web interface.
 
+Answer-level evaluation is implemented but requires generated answers in JSONL;
+the project intentionally does not fabricate answer metrics before an LLM or
+another generator is selected.
+
 Reranking is a core experiment for improving the basic similarity-based
 retrieval. It must be evaluated on validation before it is included in a final
 test configuration; it is not treated as optional by design.
