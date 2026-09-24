@@ -7,6 +7,10 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from legal_qa import BM25Retriever, HybridRetriever, LegalQAPipeline, load_documents
+from legal_qa.reranking import CrossEncoderReranker
+
+
+FINAL_RERANKER_MODEL = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
 
 
 HTML = """<!doctype html>
@@ -101,9 +105,11 @@ def make_handler(pipeline):
 def parse_args():
     parser = argparse.ArgumentParser(description="Run the Thai Legal QA web demo")
     parser.add_argument("--documents", default="data/processed/legal_documents.csv")
-    parser.add_argument("--retriever", choices=("bm25", "hybrid"), default="bm25")
+    parser.add_argument("--retriever", choices=("bm25", "hybrid"), default="hybrid")
     parser.add_argument("--alpha", type=float, default=0.5)
     parser.add_argument("--embeddings", default="results/minilm_document_embeddings.pt")
+    parser.add_argument("--reranker-model", default=FINAL_RERANKER_MODEL)
+    parser.add_argument("--no-reranker", action="store_true")
     parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
     return parser.parse_args()
@@ -121,7 +127,10 @@ def main():
     else:
         retriever = BM25Retriever(documents)
 
-    pipeline = LegalQAPipeline(retriever)
+    reranker = None
+    if not args.no_reranker:
+        reranker = CrossEncoderReranker(args.reranker_model)
+    pipeline = LegalQAPipeline(retriever, reranker=reranker)
     server = ThreadingHTTPServer((args.host, args.port), make_handler(pipeline))
     print(f"เปิดเว็บ demo ที่ http://{args.host}:{args.port}")
     try:

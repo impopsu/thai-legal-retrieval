@@ -9,6 +9,9 @@ from legal_qa.reranking import CrossEncoderReranker
 from legal_qa.qa import TransformersGenerator
 
 
+FINAL_RERANKER_MODEL = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Run the Thai legal QA demo")
     parser.add_argument(
@@ -32,7 +35,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument(
         "--reranker-model",
-        help="Optional Hugging Face cross-encoder reranker model",
+        default=FINAL_RERANKER_MODEL,
+        help="Hugging Face cross-encoder reranker model",
+    )
+    parser.add_argument(
+        "--no-reranker",
+        action="store_true",
+        help="Disable reranking for a faster baseline demo",
     )
     return parser.parse_args()
 
@@ -71,7 +80,7 @@ def main() -> None:
         generator = TransformersGenerator(args.generator_model)
 
     reranker = None
-    if args.reranker_model:
+    if not args.no_reranker:
         reranker = CrossEncoderReranker(args.reranker_model)
 
     pipeline = LegalQAPipeline(

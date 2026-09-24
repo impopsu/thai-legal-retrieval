@@ -50,9 +50,11 @@ python scripts/evaluate_reranker.py \
 python scripts/run_qa_demo.py
 ```
 
-Without a generator model, the demo displays ranked legal evidence and the
-grounded prompt. Pass `--generator-model` to use a compatible Hugging Face
-text-to-text model for answer generation.
+The default demo uses the selected final pipeline: Hybrid MiniLM alpha `0.5`,
+candidate top-20 and Cross-Encoder reranking to top-5. Use `--no-reranker` for
+a faster baseline. Without a generator model, the demo displays ranked legal
+evidence and the grounded prompt. Pass `--generator-model` to use a compatible
+Hugging Face text-to-text model for answer generation.
 
 See [docs/roadmap.md](docs/roadmap.md) for scope, metrics and next milestones.
 See [docs/dataset.md](docs/dataset.md) for dataset source, papers and the

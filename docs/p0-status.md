@@ -56,6 +56,15 @@ The configuration was evaluated once on the untouched official test split of
 The BGE-M3 validation result remains a comparison candidate. It was not used
 to tune the final test configuration, and no additional test tuning was done.
 
+## Demo limitation
+
+The final CLI pipeline is wired correctly, but an interactive query can still
+retrieve weak evidence even when aggregate benchmark metrics are strong. For
+example, the informal query `ถ้าขโมยของคนอื่น มีความผิดอะไร` did not return a
+clearly relevant theft provision in the smoke test. This is recorded as an
+error-analysis and corpus-coverage issue; the system must not generate a legal
+answer when its evidence is not clearly relevant.
+
 ## Commands
 
 Validation benchmark:
