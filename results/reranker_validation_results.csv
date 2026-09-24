@@ -1,0 +1,2 @@
+model,retriever,alpha,candidate_k,top_k,num_questions,baseline_Recall@1,baseline_Recall@3,baseline_Recall@5,baseline_MRR@5,reranked_Recall@1,reranked_Recall@3,reranked_Recall@5,reranked_MRR@5
+cross-encoder/mmarco-mMiniLMv2-L12-H384-v1,hybrid,0.5,20,5,1643,0.5672550213024954,0.7206329884357882,0.7668898356664637,0.6461858389125582,0.699939135727328,0.8222763237979306,0.8496652465003043,0.7618279569892473
