@@ -21,27 +21,40 @@ questions, using the same processed document index and Recall/MRR definitions.
 - No final method should be selected from validation alone without recording
   the runtime and memory trade-off.
 
-## Remaining P0 blockers
+## Reranker validation
 
-1. Full reranker validation has not completed on the CPU container. Short smoke
-   tests pass, but full cross-encoder inference was terminated by the runtime.
-2. BGE-M3 final test evaluation has not been rerun through the unified runner;
-   its validation run took about 85 minutes on this CPU environment.
-3. The final retrieval plus reranker configuration therefore must not yet be
-   claimed as final.
-
-## Reranker pilot
-
-On the first 100 validation questions, using Hybrid MiniLM with the
-`cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` model and candidate top-20:
+The reranker was evaluated on all 1,643 validation questions using Hybrid
+MiniLM, alpha `0.5`, candidate top-20 and the
+`cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` model:
 
 | Configuration | Recall@1 | Recall@3 | Recall@5 | MRR@5 |
 |---|---:|---:|---:|---:|
-| Hybrid MiniLM baseline | 0.5600 | 0.7200 | 0.7500 | 0.6353 |
-| Hybrid MiniLM + reranker | 0.6900 | 0.8000 | 0.8300 | 0.7498 |
+| Hybrid MiniLM baseline | 0.5673 | 0.7206 | 0.7669 | 0.6462 |
+| Hybrid MiniLM + reranker | 0.6999 | 0.8223 | 0.8497 | 0.7618 |
 
-This is an encouraging pilot only. The reranker must still be evaluated on the
-full validation split before it can be selected for the final test run.
+The reranker improved every reported retrieval metric on the full validation
+split, so it was selected for the final test configuration.
+
+## Final test configuration
+
+```text
+Retriever: Hybrid MiniLM
+Alpha: 0.5 (selected on validation)
+Candidates: top-20
+Reranker: cross-encoder/mmarco-mMiniLMv2-L12-H384-v1
+Final evidence: top-5
+```
+
+The configuration was evaluated once on the untouched official test split of
+3,742 questions:
+
+| Configuration | Recall@1 | Recall@3 | Recall@5 | MRR@5 |
+|---|---:|---:|---:|---:|
+| Hybrid MiniLM baseline | 0.5882 | 0.7435 | 0.7990 | 0.6701 |
+| Hybrid MiniLM + reranker | 0.7194 | 0.8354 | 0.8626 | 0.7790 |
+
+The BGE-M3 validation result remains a comparison candidate. It was not used
+to tune the final test configuration, and no additional test tuning was done.
 
 ## Commands
 
