@@ -1,29 +1,28 @@
 # Thai Legal QA
 
-Thai legal retrieval and grounded question answering using BM25, multilingual
-semantic search, hybrid retrieval and reranking.
+การทำ legal retrieval และ grounded question answering ภาษาไทยโดยใช้ BM25,
+multilingual semantic search, hybrid retrieval และ reranking
 
-## Current status
+## สถานะปัจจุบัน
 
-The reusable core is in `legal_qa/`. Original experiments remain in `experiments/`
-for comparison. The selected final production pipeline is Hybrid MiniLM with
-alpha `0.5` followed by Cross-Encoder reranking. BGE-M3 and Hybrid BGE-M3 remain
-validation comparison experiments. The hybrid score convention is:
+ส่วน core ที่นำกลับมาใช้ซ้ำได้อยู่ใน `legal_qa/` ส่วนการทดลองเดิมยังอยู่ใน
+`experiments/` เพื่อใช้เปรียบเทียบ production pipeline สุดท้ายที่เลือกคือ Hybrid
+MiniLM ที่มี alpha `0.5` ตามด้วย Cross-Encoder reranking ส่วน BGE-M3 และ Hybrid
+BGE-M3 ยังคงเป็นการทดลองเปรียบเทียบใน validation โดยกำหนด hybrid score ดังนี้:
 
 ```text
 hybrid_score = alpha * normalized_bm25 + (1 - alpha) * normalized_semantic
 ```
 
-Answer generation is optional and only loads a language model when one is
-explicitly supplied.
+การสร้างคำตอบเป็นทางเลือก และจะโหลด language model เฉพาะเมื่อมีการระบุอย่างชัดเจน
 
-## Run a retrieval evaluation
+## รัน retrieval evaluation
 
 ```bash
 python scripts/evaluate_retrieval.py --methods bm25
 ```
 
-Compare retrievers on validation using one protocol:
+เปรียบเทียบ retrievers บน validation ด้วย protocol เดียวกัน:
 
 ```bash
 python scripts/benchmark_retrievers.py \
@@ -31,53 +30,53 @@ python scripts/benchmark_retrievers.py \
 	--methods bm25 minilm hybrid_minilm
 ```
 
-To evaluate the hybrid retriever and cache MiniLM document embeddings:
+ประเมิน hybrid retriever และ cache MiniLM document embeddings:
 
 ```bash
 python scripts/evaluate_retrieval.py --methods bm25 hybrid --alpha 0.5
 ```
 
-Evaluate an optional cross-encoder reranker on validation data:
+ประเมิน cross-encoder reranker ที่เป็นทางเลือกบน validation data:
 
 ```bash
 python scripts/evaluate_reranker.py \
 	--model cross-encoder/mmarco-mMiniLMv2-L12-H384-v1
 ```
 
-## Run the QA demo
+## รัน QA demo
 
 ```bash
 python scripts/run_qa_demo.py
 ```
 
-The default demo uses the selected final pipeline: Hybrid MiniLM alpha `0.5`,
-candidate top-20 and Cross-Encoder reranking to top-5. Use `--no-reranker` for
-a faster baseline. Without a generator model, the demo displays ranked legal
-evidence and the grounded prompt. Pass `--generator-model` to use a compatible
-Hugging Face text-to-text model for answer generation.
+demo เริ่มต้นใช้ final pipeline ที่เลือกไว้: Hybrid MiniLM alpha `0.5`, candidate
+top-20 และ Cross-Encoder reranking เป็น top-5 ใช้ `--no-reranker` สำหรับ baseline
+ที่เร็วขึ้น หากไม่มี generator model demo จะแสดง legal evidence ที่จัดอันดับแล้ว
+และ grounded prompt ใช้ `--generator-model` เพื่อระบุ Hugging Face text-to-text
+model ที่เข้ากันได้สำหรับการสร้างคำตอบ
 
-See [docs/roadmap.md](docs/roadmap.md) for scope, metrics and next milestones.
-See [docs/dataset.md](docs/dataset.md) for dataset source, papers and the
-untouched-test evaluation protocol.
-See [docs/p0-status.md](docs/p0-status.md) for the current retrieval benchmark
-and remaining blockers.
-See [docs/human-evaluation.md](docs/human-evaluation.md) for the answer review
-rubric and [docs/reproducibility.md](docs/reproducibility.md) for setup steps.
+ดู [docs/roadmap.md](docs/roadmap.md) สำหรับ scope, metrics และ milestones ถัดไป
+ดู [docs/dataset.md](docs/dataset.md) สำหรับแหล่งที่มาของ dataset, papers และ
+evaluation protocol ที่ไม่แตะต้อง test
+ดู [docs/p0-status.md](docs/p0-status.md) สำหรับ retrieval benchmark ปัจจุบัน
+และ blockers ที่ยังเหลืออยู่
+ดู [docs/human-evaluation.md](docs/human-evaluation.md) สำหรับ rubric การตรวจคำตอบ
+และ [docs/reproducibility.md](docs/reproducibility.md) สำหรับขั้นตอนการตั้งค่า
 
-When generated answers are available as JSONL, evaluate them with:
+เมื่อมีคำตอบที่สร้างแล้วในรูปแบบ JSONL ให้ประเมินด้วย:
 
 ```bash
 python scripts/evaluate_answers.py --predictions results/qa_predictions.jsonl
 ```
 
-Export grounded prompts for an external or future LLM:
+ส่งออก grounded prompts สำหรับ external หรือ future LLM:
 
 ```bash
 python scripts/export_qa_prompts.py --limit 100
 ```
 
-Generate answers with Gemini. Set `GEMINI_API_KEY` directly in the terminal;
-never put it in a file or command-line argument:
+สร้างคำตอบด้วย Gemini ให้ตั้งค่า `GEMINI_API_KEY` โดยตรงใน terminal
+และอย่าใส่ค่าไว้ในไฟล์หรือ command-line argument:
 
 ```bash
 python scripts/export_qa_prompts.py \

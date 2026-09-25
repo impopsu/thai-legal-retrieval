@@ -13,6 +13,8 @@
 | BGE-M3 | 0.6543 | 0.8113 | 0.8673 | 0.7379 |
 | Hybrid BGE-M3 (alpha=0.5) | 0.6409 | 0.7815 | 0.8411 | 0.7166 |
 
+หมายเหตุ: ค่า Validation ของ BM25 และ Semantic MiniLM ที่แสดงในตารางนี้ยังไม่มี CSV ต้นทางที่ยืนยันตัวเลขทั้งสองแถวโดยตรงใน result files ที่มีอยู่ใน repository จึงควรถือเป็นค่าที่รายงานไว้ใน status document และไม่ควรใช้เป็นหลักฐานใหม่จนกว่าจะตรวจสอบผลต้นทางหรือ rerun การทดลอง
+
 ค่า Hybrid BGE-M3 ด้านบนเป็นผล validation ที่ใช้อ้างอิงจาก
 `results/retrieval_benchmark.csv` ซึ่งสร้างโดย `scripts/benchmark_retrievers.py`
 ด้วย validation split จำนวน 1,643 คำถาม ส่วน
