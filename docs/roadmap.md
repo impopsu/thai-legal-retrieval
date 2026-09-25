@@ -1,57 +1,55 @@
-# Project Roadmap
+# แผนงานโครงการ
 
-## Current scope
+## ขอบเขตปัจจุบัน
 
-The project has a reusable retrieval core in `legal_qa/` and keeps the original
-scripts in `experiments/` for reproducible comparisons. The main convention is:
+โครงการมี retrieval core ที่นำกลับมาใช้ได้ใน `legal_qa/` และเก็บ scripts เดิมไว้ใน
+`experiments/` เพื่อการเปรียบเทียบที่ทำซ้ำได้ convention หลักคือ:
 
 ```text
 hybrid_score = alpha * normalized_bm25 + (1 - alpha) * normalized_semantic
 ```
 
-No retrieval method is selected as the final system yet. BM25, Hybrid MiniLM,
-BGE-M3 and Hybrid BGE-M3 must be benchmarked under the same validation/test
-protocol before choosing the main retriever. Runtime and memory are reported
-alongside retrieval quality because BGE-M3 is expensive on CPU.
+ยังไม่มี retrieval method ใดถูกเลือกเป็นระบบสุดท้าย BM25, Hybrid MiniLM, BGE-M3
+และ Hybrid BGE-M3 ต้องทำ benchmark ภายใต้ validation/test protocol เดียวกันก่อน
+เลือก retriever หลัก โดยรายงาน runtime และ memory ควบคู่กับคุณภาพการ retrieval
+เนื่องจาก BGE-M3 มีค่าใช้จ่ายสูงบน CPU
 
-## Milestones
+## หมุดหมาย
 
-1. Retrieval benchmark: compare BM25, Hybrid MiniLM, BGE-M3 and Hybrid BGE-M3.
-2. Reranker benchmark: rerank the same candidate set and compare against the
-	selected retrieval baselines on validation.
-3. Final method selection: choose retrieval and reranker using validation only.
-4. Evidence pipeline: return ranked legal documents with law title and section.
-5. Grounded QA: generate an answer only from retrieved evidence and include citations.
-6. QA evaluation: measure answer correctness, citation correctness and faithfulness.
-7. Demo: expose the selected pipeline through a CLI or web interface.
+1. Retrieval benchmark: เปรียบเทียบ BM25, Hybrid MiniLM, BGE-M3 และ Hybrid BGE-M3
+2. Reranker benchmark: rerank candidate set เดียวกันและเปรียบเทียบกับ retrieval baselines ที่เลือกไว้บน validation
+3. Final method selection: เลือก retrieval และ reranker โดยใช้ validation เท่านั้น
+4. Evidence pipeline: ส่งคืน legal documents ที่จัดอันดับแล้วพร้อมชื่อกฎหมายและมาตรา
+5. Grounded QA: สร้างคำตอบจาก retrieved evidence เท่านั้นและใส่ citations
+6. QA evaluation: วัด answer correctness, citation correctness และ faithfulness
+7. Demo: เปิดให้ใช้งาน pipeline ที่เลือกผ่าน CLI หรือ web interface
 
-Answer-level evaluation is implemented but requires generated answers in JSONL;
-the project intentionally does not fabricate answer metrics before an LLM or
-another generator is selected.
+มีการ implement answer-level evaluation แล้ว แต่ต้องมีคำตอบที่สร้างในรูปแบบ JSONL
+โครงการจะไม่สร้าง answer metrics ขึ้นเองก่อนที่จะเลือก LLM หรือ generator อื่น
 
-The project is report-ready for retrieval and grounded-prompt experiments. A
-real answer-quality result still requires selecting a generator and collecting
-human judgments using `docs/human-evaluation.md`.
+โครงการพร้อมสำหรับรายงานผล retrieval และ grounded-prompt experiments แล้ว แต่ผล
+ด้านคุณภาพคำตอบจริงยังต้องเลือก generator และเก็บผลการตัดสินจากมนุษย์โดยใช้
+`docs/human-evaluation.md`
 
-Reranking is a core experiment for improving the basic similarity-based
-retrieval. It must be evaluated on validation before it is included in a final
-test configuration; it is not treated as optional by design.
+Reranking เป็นการทดลองหลักเพื่อปรับปรุง retrieval ที่อาศัย similarity พื้นฐาน
+ต้องประเมินบน validation ก่อนนำไปใช้ใน final test configuration และไม่ได้ถือว่า
+เป็นส่วนเสริมที่เลือกใช้ได้ตามอำเภอใจ
 
-## Current evaluation commands
+## คำสั่งประเมินผลปัจจุบัน
 
-Create validation data from the training split only:
+สร้าง validation data จาก training split เท่านั้น:
 
 ```bash
 python scripts/split_train_validation.py
 ```
 
-Select `alpha` using validation:
+เลือก `alpha` โดยใช้ validation:
 
 ```bash
 python scripts/select_alpha.py
 ```
 
-Compare retrieval methods on validation:
+เปรียบเทียบ retrieval methods บน validation:
 
 ```bash
 python scripts/benchmark_retrievers.py \
@@ -59,16 +57,15 @@ python scripts/benchmark_retrievers.py \
 	--methods bm25 minilm hybrid_minilm
 ```
 
-Run the final test evaluation with the selected alpha. Do not use this command
-to tune parameters:
+รันการประเมิน final test ด้วย alpha ที่เลือกไว้ ห้ามใช้คำสั่งนี้เพื่อ tune parameters:
 
 ```bash
 python scripts/evaluate_retrieval.py --methods bm25 hybrid --alpha 0.5
 ```
 
-## Reproducibility notes
+## หมายเหตุเกี่ยวกับการทำซ้ำผลการทดลอง
 
-- Run scripts from the repository root.
-- Use validation to select `alpha`; use test only for final reporting.
-- Treat `MRR@5` as a top-five metric, not full-ranking MRR.
-- Generated datasets, embeddings and result files are ignored by Git by default.
+- รัน scripts จาก root ของ repository
+- ใช้ validation เพื่อเลือก `alpha` และใช้ test สำหรับการรายงานผลสุดท้ายเท่านั้น
+- ให้ถือว่า `MRR@5` เป็น metric ของ top-five ไม่ใช่ full-ranking MRR
+- โดยค่าเริ่มต้น Git จะเพิกเฉยต่อ generated datasets, embeddings และ result files

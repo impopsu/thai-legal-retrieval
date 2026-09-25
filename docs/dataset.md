@@ -1,15 +1,15 @@
-# Dataset
+# ชุดข้อมูล
 
-This project uses **WangchanX-Legal-ThaiCCL-RAG**.
+โครงการนี้ใช้ **WangchanX-Legal-ThaiCCL-RAG**
 
-- Source: [Hugging Face: airesearch/WangchanX-Legal-ThaiCCL-RAG](https://huggingface.co/datasets/airesearch/WangchanX-Legal-ThaiCCL-RAG)
-- Language: Thai
-- Task: Thai legal question answering and retrieval-augmented generation
-- Local source of truth: `data/raw/train-00000-of-00001.parquet` and `data/raw/test-00000-of-00001.parquet`
-- Train examples in the current files: 8,211
-- Test examples in the current files: 3,742
+- แหล่งที่มา: [Hugging Face: airesearch/WangchanX-Legal-ThaiCCL-RAG](https://huggingface.co/datasets/airesearch/WangchanX-Legal-ThaiCCL-RAG)
+- ภาษา: Thai
+- งาน: การตอบคำถามกฎหมายไทยและการสร้างแบบ Retrieval-Augmented Generation
+- แหล่งข้อมูลหลักภายในเครื่อง: `data/raw/train-00000-of-00001.parquet` และ `data/raw/test-00000-of-00001.parquet`
+- จำนวนตัวอย่าง Train ในไฟล์ปัจจุบัน: 8,211
+- จำนวนตัวอย่าง Test ในไฟล์ปัจจุบัน: 3,742
 
-Each record contains:
+แต่ละระเบียนประกอบด้วย:
 
 ```text
 question
@@ -19,19 +19,19 @@ positive_answer
 hard_negative_answer
 ```
 
-The current processed document index is generated in
-`data/processed/legal_documents.csv` from the context records. Its construction
-should be described explicitly in reports because the benchmark labels provide
-the contexts used to build this local index.
+ดัชนีเอกสารที่ผ่านการประมวลผลในปัจจุบันสร้างไว้ใน
+`data/processed/legal_documents.csv` จากระเบียน context ควรอธิบายการสร้างดัชนีนี้
+ไว้อย่างชัดเจนในรายงาน เนื่องจาก label ของ benchmark เป็นแหล่ง context ที่ใช้สร้าง
+ดัชนีภายในเครื่องนี้
 
-## Evaluation protocol
+## โพรโทคอลการประเมิน
 
-- The official test Parquet remains untouched.
-- Only the training split may be divided into train and validation subsets.
-- Model, alpha, top-k and reranking settings must be selected on validation.
-- The official test split is used once for final reporting.
+- ไฟล์ Parquet ของ test อย่างเป็นทางการจะไม่ถูกแก้ไข
+- สามารถแบ่งเฉพาะ training split ออกเป็น train และ validation subsets ได้
+- ต้องเลือก model, alpha, top-k และการตั้งค่า reranking จาก validation
+- ใช้ official test split เพียงครั้งเดียวสำหรับการรายงานผลสุดท้าย
 
-## Related papers
+## งานวิจัยที่เกี่ยวข้อง
 
 1. Akarajaradwong et al. **NitiBench: Benchmarking LLM Frameworks on Thai
    Legal Question Answering Capabilities.** EMNLP 2025.

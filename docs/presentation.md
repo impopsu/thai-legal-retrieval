@@ -1,6 +1,6 @@
-# Thai Legal Question Answering and Retrieval System
+# ระบบตอบคำถามและ Retrieval ด้านกฎหมายไทย
 
-## Slide 1 — Title
+## Slide 1 — ชื่อเรื่อง
 
 **Thai Legal Question Answering and Retrieval System**
 
@@ -11,32 +11,32 @@ Kasetsart University
 
 ---
 
-## Slide 2 — Problem
+## Slide 2 — ปัญหา
 
-### Problem
+### ปัญหา
 
-Thai legal questions often require finding the exact legal section before generating an answer.
+คำถามกฎหมายไทยมักต้องค้นหามาตรากฎหมายที่ตรงกันก่อนจึงจะสร้างคำตอบได้
 
-Challenges:
+ความท้าทาย:
 
-- Legal sections contain similar terminology.
-- The correct law may be identified while the exact section is missed.
-- Pure semantic or lexical retrieval can return closely related but incorrect sections.
-- LLM answers need reliable legal evidence to reduce hallucination.
+- มาตรากฎหมายมีศัพท์ที่คล้ายกัน
+- อาจระบุกฎหมายได้ถูกต้องแต่พลาดมาตราที่ตรงกัน
+- semantic หรือ lexical retrieval เพียงอย่างเดียวอาจคืนมาตราที่เกี่ยวข้องใกล้เคียงแต่ไม่ถูกต้อง
+- คำตอบจาก LLM ต้องมี legal evidence ที่เชื่อถือได้เพื่อลด hallucination
 
-### Goal
+### เป้าหมาย
 
-Improve legal evidence retrieval and provide grounded evidence for answer generation.
+ปรับปรุงการ retrieval legal evidence และจัดเตรียม grounded evidence สำหรับการสร้างคำตอบ
 
 ---
 
-## Slide 3 — Dataset
+## Slide 3 — ชุดข้อมูล
 
 ### WangchanX-Legal-ThaiCCL-RAG
 
-Thai legal QA/RAG dataset focused on corporate and commercial law.
+ชุดข้อมูล Thai legal QA/RAG ที่มุ่งเน้นกฎหมายบริษัทและกฎหมายพาณิชย์
 
-**Local data**
+**ข้อมูลภายในเครื่อง**
 
 - 35 laws
 - 4,545 unique legal sections
@@ -44,7 +44,7 @@ Thai legal QA/RAG dataset focused on corporate and commercial law.
 - 1,643 validation questions
 - 3,742 test questions
 
-Each QA example contains:
+แต่ละ QA example ประกอบด้วย:
 
 - Question
 - Positive context
@@ -54,9 +54,9 @@ Each QA example contains:
 
 ---
 
-## Slide 4 — System Architecture
+## Slide 4 — สถาปัตยกรรมระบบ
 
-### Proposed Pipeline
+### Pipeline ที่เสนอ
 
 **Question**
 
@@ -86,49 +86,49 @@ BM25 + Semantic Retrieval
 
 **Answer + Citation**
 
-The first stage retrieves candidates efficiently, while the reranker performs fine-grained relevance ranking.
+ขั้นตอนแรก retrieval candidates อย่างมีประสิทธิภาพ ส่วน reranker ทำ fine-grained relevance ranking
 
 ---
 
-## Slide 5 — Retrieval Methods
+## Slide 5 — วิธีการ Retrieval
 
-### Methods Compared
+### Methods ที่เปรียบเทียบ
 
 **BM25**
 
-Lexical retrieval based on term matching.
+ใช้ Lexical retrieval โดยอาศัยการจับคู่คำศัพท์
 
 **MiniLM**
 
-Dense semantic retrieval using sentence embeddings.
+ใช้ Dense semantic retrieval ด้วย sentence embeddings
 
 **Hybrid**
 
-Combines BM25 and semantic retrieval.
+รวม BM25 และ semantic retrieval เข้าด้วยกัน
 
 **BGE-M3**
 
-Multilingual embedding model evaluated as a stronger semantic retrieval baseline.
+ประเมิน Multilingual embedding model ในฐานะ semantic retrieval baseline ที่มีประสิทธิภาพสูงขึ้น
 
 ---
 
-## Slide 6 — Validation: Choosing Hybrid Weight
+## Slide 6 — Validation: การเลือก Hybrid Weight
 
 ### Hybrid Alpha
 
-The validation set was used to select the weighting parameter.
+ใช้ validation set เพื่อเลือก weighting parameter
 
-The best validation MRR was obtained at:
+validation MRR ที่ดีที่สุดได้จาก:
 
 **alpha = 0.5**
 
-This configuration was used for the final Hybrid retrieval pipeline.
+ใช้ configuration นี้สำหรับ final Hybrid retrieval pipeline
 
 ---
 
-## Slide 7 — Test Results
+## Slide 7 — ผลการทดสอบ
 
-### Retrieval Performance
+### ประสิทธิภาพ Retrieval
 
 | Method | Split | R@1 | R@3 | R@5 | MRR |
 |---|---|---:|---:|---:|---:|
@@ -138,56 +138,56 @@ This configuration was used for the final Hybrid retrieval pipeline.
 | Hybrid MiniLM + Cross-Encoder Reranker (FINAL) | Test | 71.94% | 83.54% | 86.26% | 0.7790 |
 | BGE-M3 | Validation | 65.43% | 81.13% | 86.73% | 0.7379 |
 
-**Observation**
+**ข้อสังเกต**
 
-The final pipeline is Hybrid MiniLM + Cross-Encoder Reranker. BGE-M3 is shown only as a validation comparison; no BGE-M3 test-set result is claimed.
+final pipeline คือ Hybrid MiniLM + Cross-Encoder Reranker ส่วน BGE-M3 แสดงไว้เฉพาะในฐานะ validation comparison และไม่มีการอ้างผล BGE-M3 test-set
 
 ---
 
-## Slide 8 — Error Analysis
+## Slide 8 — การวิเคราะห์ข้อผิดพลาด
 
-### Sampled Verification
+### การตรวจสอบจากตัวอย่าง
 
-50 validation questions were inspected.
+ตรวจสอบ validation questions จำนวน 50 ข้อ
 
-Observed errors:
+ข้อผิดพลาดที่สังเกตพบ:
 
-- Wrong section within the same law.
-- Similar legal terminology.
-- Related but incorrect law.
-- Exact gold section ranked below related sections.
-- One dataset example had no positive context.
+- มาตราผิดภายในกฎหมายฉบับเดียวกัน
+- ศัพท์กฎหมายที่คล้ายกัน
+- กฎหมายที่เกี่ยวข้องแต่ไม่ถูกต้อง
+- gold section ที่ตรงกันถูกจัดอันดับต่ำกว่ามาตราที่เกี่ยวข้อง
+- ตัวอย่างหนึ่งในชุดข้อมูลไม่มี positive context
 
-### Main Finding
+### ข้อค้นพบหลัก
 
-Many errors are **fine-grained ranking errors** rather than complete retrieval failures.
+ข้อผิดพลาดจำนวนมากเป็น **fine-grained ranking errors** ไม่ใช่ retrieval failures โดยสมบูรณ์
 
-This supports the use of a second-stage Cross-Encoder Reranker.
+ข้อค้นพบนี้สนับสนุนการใช้ Cross-Encoder Reranker ในขั้นตอนที่สอง
 
 ---
 
 ## Slide 9 — Grounded QA
 
-### Grounded Answer Generation
+### การสร้างคำตอบแบบ Grounded
 
-The top-5 retrieved legal sections are provided to the LLM as evidence.
+ส่ง legal sections ที่ retrieval ได้ระดับ top-5 ให้ LLM เป็น evidence
 
-The prompt instructs the model to:
+prompt กำหนดให้ model:
 
-- Use only retrieved evidence.
-- Avoid inventing legal provisions.
-- State when evidence is insufficient.
-- Identify the relevant law and section.
+- ใช้เฉพาะ retrieved evidence
+- หลีกเลี่ยงการแต่งเติมบทบัญญัติกฎหมาย
+- ระบุเมื่อ evidence ไม่เพียงพอ
+- ระบุกฎหมายและมาตราที่เกี่ยวข้อง
 
-This separates **retrieval** from **answer generation**.
+การออกแบบนี้แยก **retrieval** ออกจาก **answer generation**
 
 ---
 
-## Slide 10 — Evaluation Limitation
+## Slide 10 — ข้อจำกัดของการประเมิน
 
-### Answer-Level Evaluation
+### การประเมินระดับคำตอบ
 
-An answer-generation pipeline and evaluator were implemented.
+มีการ implement answer-generation pipeline และ evaluator
 
 Metrics:
 
@@ -195,48 +195,48 @@ Metrics:
 - Citation correctness
 - Abstention
 
-However, full answer-level evaluation was not completed because the available free Gemini API quota was exhausted.
+อย่างไรก็ตาม ไม่สามารถประเมิน answer-level แบบเต็มได้เนื่องจาก free Gemini API quota ที่มีอยู่หมดลง
 
-Therefore:
+ดังนั้น:
 
-**Retrieval performance is the primary quantitative evaluation.**
+**Retrieval performance เป็นการประเมินเชิงปริมาณหลัก**
 
 ---
 
 ## Slide 11 — Demo
 
-### System Demo
+### การสาธิตระบบ
 
-Demonstrate:
+สาธิต:
 
-1. Enter a Thai legal question.
-2. Retrieve relevant legal sections.
-3. Rerank the candidate evidence.
-4. Generate a grounded answer.
-5. Display the cited legal source.
+1. ป้อนคำถามกฎหมายไทย
+2. retrieval มาตรากฎหมายที่เกี่ยวข้อง
+3. rerank candidate evidence
+4. สร้าง grounded answer
+5. แสดง legal source ที่อ้างอิง
 
 ---
 
-## Slide 12 — Conclusion
+## Slide 12 — บทสรุป
 
-### Conclusion
+### บทสรุป
 
-The project implemented a Thai legal QA/RAG pipeline with multi-stage retrieval.
+โครงการนี้ implement Thai legal QA/RAG pipeline ที่มี multi-stage retrieval
 
-Key results:
+ผลลัพธ์สำคัญ:
 
-- BM25 provides a strong lexical baseline.
-- Hybrid retrieval improves over BM25.
-- Hybrid MiniLM + Cross-Encoder Reranker is the FINAL PIPELINE, with test-set R@1 71.94%, R@3 83.54%, R@5 86.26%, and MRR 0.7790.
-- BGE-M3 is a validation comparison, not the final pipeline.
-- Error analysis shows that exact-section ranking remains challenging.
-- Cross-Encoder reranking provides a suitable second-stage approach.
-- Grounded prompting connects retrieved legal evidence to LLM answer generation.
+- BM25 เป็น lexical baseline ที่แข็งแรง
+- Hybrid retrieval ปรับปรุงผลจาก BM25
+- Hybrid MiniLM + Cross-Encoder Reranker คือ FINAL PIPELINE โดยมี test-set R@1 71.94%, R@3 83.54%, R@5 86.26% และ MRR 0.7790
+- BGE-M3 เป็น validation comparison ไม่ใช่ final pipeline
+- การวิเคราะห์ข้อผิดพลาดแสดงให้เห็นว่าการจัดอันดับมาตราที่ตรงกันยังเป็นความท้าทาย
+- Cross-Encoder reranking เป็นแนวทางที่เหมาะสมสำหรับขั้นตอนที่สอง
+- Grounded prompting เชื่อม legal evidence ที่ retrieval ได้เข้ากับการสร้างคำตอบของ LLM
 
-### Future Work
+### งานในอนาคต
 
-- Full expert human evaluation.
-- More detailed citation evaluation.
-- Latency and memory analysis.
-- More reranker model comparisons.
-- Full-scale answer generation and evaluation.
+- การประเมินโดยผู้เชี่ยวชาญแบบเต็ม
+- การประเมิน citation ที่ละเอียดขึ้น
+- การวิเคราะห์ latency และ memory
+- การเปรียบเทียบ reranker models เพิ่มเติม
+- การสร้างและประเมินคำตอบแบบเต็มขนาด

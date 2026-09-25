@@ -1,19 +1,17 @@
-# Human Evaluation Protocol
+# โพรโทคอลการประเมินโดยมนุษย์
 
-Automatic retrieval metrics do not establish that a generated Thai legal answer
-is useful or safe. Use this protocol after generating answers from the grounded
-prompts.
+metrics การ retrieval แบบอัตโนมัติไม่สามารถยืนยันได้ว่าคำตอบกฎหมายไทยที่สร้างขึ้น
+มีประโยชน์หรือปลอดภัย ให้ใช้โพรโทคอลนี้หลังจากสร้างคำตอบจาก grounded prompts แล้ว
 
-## Sampling
+## การสุ่มตัวอย่าง
 
-- Sample 50-100 questions from the untouched test set after the final system is
-  locked.
-- Do not use these judgments to change alpha, top-k, model or reranker.
-- Have at least two reviewers score each answer when possible.
+- สุ่มคำถาม 50-100 ข้อจาก untouched test set หลังจากล็อกระบบสุดท้ายแล้ว
+- ห้ามใช้ผลการตัดสินเหล่านี้เพื่อเปลี่ยน alpha, top-k, model หรือ reranker
+- หากเป็นไปได้ ให้ผู้ประเมินอย่างน้อยสองคนให้คะแนนคำตอบแต่ละข้อ
 
-## Rubric
+## เกณฑ์การให้คะแนน
 
-Score each item from 0 to 2:
+ให้คะแนนแต่ละรายการตั้งแต่ 0 ถึง 2:
 
 | Criterion | 0 | 1 | 2 |
 |---|---|---|---|
@@ -23,7 +21,7 @@ Score each item from 0 to 2:
 | Completeness | Misses the main issue | Partly addresses it | Addresses the question |
 | Abstention behavior | Hallucinates when evidence is weak | Unclear | Correctly refuses or qualifies |
 
-Recommended annotation columns:
+คอลัมน์ที่แนะนำสำหรับการทำ annotation:
 
 ```text
 question
@@ -38,5 +36,5 @@ notes
 reviewer_id
 ```
 
-Report the mean score per criterion, agreement between reviewers, and examples
-of both successful and failed answers.
+รายงานค่าเฉลี่ยของแต่ละเกณฑ์ ความสอดคล้องระหว่างผู้ประเมิน และตัวอย่างทั้งคำตอบ
+ที่ประสบความสำเร็จและคำตอบที่ไม่สำเร็จ
