@@ -6,9 +6,9 @@ semantic search, hybrid retrieval and reranking.
 ## Current status
 
 The reusable core is in `legal_qa/`. Original experiments remain in `experiments/`
-for comparison. No retrieval method is selected as the final production method
-yet; BM25, Hybrid MiniLM, BGE-M3 and Hybrid BGE-M3 must be compared under the
-same evaluation protocol first. The hybrid score convention is:
+for comparison. The selected final production pipeline is Hybrid MiniLM with
+alpha `0.5` followed by Cross-Encoder reranking. BGE-M3 and Hybrid BGE-M3 remain
+validation comparison experiments. The hybrid score convention is:
 
 ```text
 hybrid_score = alpha * normalized_bm25 + (1 - alpha) * normalized_semantic

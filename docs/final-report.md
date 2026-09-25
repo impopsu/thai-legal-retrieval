@@ -58,15 +58,17 @@ This two-stage design allows the first stage to efficiently retrieve a broad can
 
 Retrieval performance was evaluated using Recall@1, Recall@3, Recall@5, and Mean Reciprocal Rank (MRR).
 
-| Method | Recall@1 | Recall@3 | Recall@5 | MRR |
-|---|---:|---:|---:|---:|
-| BM25 | 55.59% | 70.12% | 75.28% | 0.6328 |
-| Hybrid alpha=0.5 | 58.82% | 74.35% | 79.90% | 0.6701 |
-| BGE-M3 | 65.74% | 82.10% | 86.64% | 0.7409 |
+| Method | Split | Recall@1 | Recall@3 | Recall@5 | MRR |
+|---|---|---:|---:|---:|---:|
+| BM25 | Test | 55.59% | 70.12% | 75.28% | 0.6328 |
+| Semantic MiniLM | Test | 33.54% | 48.61% | 55.13% | 0.4168 |
+| Hybrid alpha=0.5 | Test | 58.82% | 74.35% | 79.90% | 0.6701 |
+| Hybrid MiniLM + Cross-Encoder Reranker (FINAL PIPELINE) | Test | 71.94% | 83.54% | 86.26% | 0.7790 |
+| BGE-M3 | Validation | 65.43% | 81.13% | 86.73% | 0.7379 |
 
-The results show that BGE-M3 achieved higher retrieval scores than the BM25 and Hybrid MiniLM configurations on the untouched test set.
+The BGE-M3 row is a validation-set comparison only. No verified BGE-M3 test-set result is reported here.
 
-The Hybrid configuration nevertheless provides a useful baseline for the final two-stage retrieval pipeline because it combines lexical and semantic signals before reranking.
+The final pipeline is Hybrid MiniLM with alpha = 0.5 followed by a Cross-Encoder Reranker. Its test-set result is reported in the table above.
 
 ## 6. Sampled Retrieval Verification
 
@@ -143,9 +145,9 @@ Finally, the dataset itself contains at least one example where a positive answe
 
 This project implemented and evaluated a Thai legal retrieval and question answering pipeline.
 
-The experiments compared BM25, semantic retrieval, hybrid retrieval, and BGE-M3. On the untouched test set, BGE-M3 achieved Recall@1 of 65.74%, Recall@3 of 82.10%, Recall@5 of 86.64%, and MRR of 0.7409.
+The experiments compared BM25, semantic retrieval, hybrid retrieval, BGE-M3, and Cross-Encoder reranking. BGE-M3 was evaluated as a validation comparison and achieved Recall@1 of 65.43%, Recall@3 of 81.13%, Recall@5 of 86.73%, and MRR of 0.7379. No BGE-M3 test-set result is claimed.
 
-The final system uses a two-stage retrieval architecture in which hybrid retrieval generates candidates and a Cross-Encoder Reranker selects the final evidence for grounded answer generation.
+The FINAL PIPELINE is Hybrid MiniLM with alpha = 0.5 and a Cross-Encoder Reranker. On the untouched test set it achieved Recall@1 of 71.94%, Recall@3 of 83.54%, Recall@5 of 86.26%, and MRR of 0.7790. It generates candidates and selects the final evidence for grounded answer generation.
 
 Error analysis indicates that many retrieval failures occur between legally similar sections, supporting the use of reranking to improve fine-grained relevance ranking.
 

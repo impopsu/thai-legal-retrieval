@@ -130,15 +130,17 @@ This configuration was used for the final Hybrid retrieval pipeline.
 
 ### Retrieval Performance
 
-| Method | R@1 | R@3 | R@5 | MRR |
-|---|---:|---:|---:|---:|
-| BM25 | 55.59% | 70.12% | 75.28% | 0.6328 |
-| Hybrid α=0.5 | 58.82% | 74.35% | 79.90% | 0.6701 |
-| BGE-M3 | 65.74% | 82.10% | 86.64% | 0.7409 |
+| Method | Split | R@1 | R@3 | R@5 | MRR |
+|---|---|---:|---:|---:|---:|
+| BM25 | Test | 55.59% | 70.12% | 75.28% | 0.6328 |
+| Semantic MiniLM | Test | 33.54% | 48.61% | 55.13% | 0.4168 |
+| Hybrid α=0.5 | Test | 58.82% | 74.35% | 79.90% | 0.6701 |
+| Hybrid MiniLM + Cross-Encoder Reranker (FINAL) | Test | 71.94% | 83.54% | 86.26% | 0.7790 |
+| BGE-M3 | Validation | 65.43% | 81.13% | 86.73% | 0.7379 |
 
 **Observation**
 
-BGE-M3 achieved the highest retrieval scores on the untouched test set.
+The final pipeline is Hybrid MiniLM + Cross-Encoder Reranker. BGE-M3 is shown only as a validation comparison; no BGE-M3 test-set result is claimed.
 
 ---
 
@@ -225,7 +227,8 @@ Key results:
 
 - BM25 provides a strong lexical baseline.
 - Hybrid retrieval improves over BM25.
-- BGE-M3 achieved the highest benchmark retrieval performance.
+- Hybrid MiniLM + Cross-Encoder Reranker is the FINAL PIPELINE, with test-set R@1 71.94%, R@3 83.54%, R@5 86.26%, and MRR 0.7790.
+- BGE-M3 is a validation comparison, not the final pipeline.
 - Error analysis shows that exact-section ranking remains challenging.
 - Cross-Encoder reranking provides a suitable second-stage approach.
 - Grounded prompting connects retrieved legal evidence to LLM answer generation.
