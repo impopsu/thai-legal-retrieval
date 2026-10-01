@@ -92,6 +92,41 @@ evaluation definitions.
 See [docs/teacher-checklist.md](docs/teacher-checklist.md) for the commands and
 points to present in the next meeting.
 
+## Gemini answer generation
+
+Set the key directly in the terminal environment. Do not put it in source code,
+JSONL, Git, or command-line arguments.
+
+Generate validation prompts:
+
+```bash
+python scripts/export_qa_prompts.py \
+	--questions data/processed/validation_retrieval.parquet \
+	--limit 100 \
+	--output results/qa_prompts_validation_100.jsonl
+```
+
+Generate answers with Gemini 3.1 Pro Preview:
+
+```bash
+python scripts/generate_gemini_answers.py \
+	--input results/qa_prompts_validation_100.jsonl \
+	--output results/qa_predictions_validation_100.jsonl \
+	--model gemini-3.1-pro-preview
+```
+
+Evaluate answer F1 and citations:
+
+```bash
+python scripts/evaluate_answers.py \
+	--predictions results/qa_predictions_validation_100.jsonl \
+	--references data/processed/validation_retrieval.parquet \
+	--output results/answer_metrics_validation_100.csv
+```
+
+The generator resumes successful records and logs failed records without
+printing the API key.
+
 When generated answers are available as JSONL, evaluate them with:
 
 ```bash

@@ -39,3 +39,10 @@ python scripts/run_web_demo.py
 
 Generated embeddings, datasets and result files are intentionally ignored by
 Git. Recreate them with the commands above when setting up a new environment.
+
+## Gemini generator
+
+The answer generator uses model `gemini-3.1-pro-preview` and reads
+`GEMINI_API_KEY` only from the environment. It uses temperature `0.0`, retries
+transient errors with exponential backoff, resumes successful JSONL records and
+records non-transient failures without stopping the whole batch.
