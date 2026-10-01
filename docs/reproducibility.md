@@ -10,9 +10,12 @@
 ## Retrieval
 
 - Run commands from the repository root.
+- Check hardware with `python scripts/check_hardware.py` before choosing CPU/GPU.
 - Create validation data with `scripts/split_train_validation.py`.
+- Prepare question-level context/category records with `scripts/prepare_qa_dataset.py`.
 - Select alpha with `scripts/select_alpha.py`.
 - Benchmark methods with `scripts/benchmark_retrievers.py`.
+- Evaluate retrieved contexts with `scripts/evaluate_context.py`.
 - Record model names, alpha, candidate-k, top-k, metrics and runtime.
 
 ## Final configuration

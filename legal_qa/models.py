@@ -8,6 +8,7 @@ class LegalDocument:
     law_title: str
     section: str
     context: str
+    category: str = "other"
 
 
 @dataclass(frozen=True)

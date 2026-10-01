@@ -52,9 +52,19 @@ class LegalQAPipeline:
         self.reranker = reranker
         self.generator = generator
 
-    def answer(self, question: str, top_k: int = 5, candidate_k: int | None = None):
+    def answer(
+        self,
+        question: str,
+        top_k: int = 5,
+        candidate_k: int | None = None,
+        category: str = "all",
+    ):
         candidate_k = candidate_k or max(top_k, top_k * 4)
-        sources = self.retriever.search(question, top_k=candidate_k)
+        sources = self.retriever.search(
+            question,
+            top_k=candidate_k,
+            category=category,
+        )
         if self.reranker:
             sources = self.reranker.rerank(question, sources, top_k)
         else:

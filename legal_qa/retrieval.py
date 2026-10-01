@@ -44,8 +44,16 @@ class BM25Retriever:
     def score_many(self, queries: Sequence[str]) -> np.ndarray:
         return np.vstack([self.score(query) for query in queries])
 
-    def search(self, query: str, top_k: int = 5) -> list[SearchResult]:
+    def search(
+        self,
+        query: str,
+        top_k: int = 5,
+        category: str = "all",
+    ) -> list[SearchResult]:
         scores = self.score(query)
+        if category != "all":
+            scores = scores.copy()
+            scores[[doc.category != category for doc in self.documents]] = -np.inf
         indices = np.argsort(scores)[::-1][:top_k]
         return [SearchResult(self.documents[i], float(scores[i])) for i in indices]
 
@@ -100,8 +108,16 @@ class SemanticRetriever:
         )
         return (query_embeddings @ self.document_embeddings.T).detach().cpu().numpy()
 
-    def search(self, query: str, top_k: int = 5) -> list[SearchResult]:
+    def search(
+        self,
+        query: str,
+        top_k: int = 5,
+        category: str = "all",
+    ) -> list[SearchResult]:
         scores = self.score(query)
+        if category != "all":
+            scores = scores.copy()
+            scores[[doc.category != category for doc in self.documents]] = -np.inf
         indices = np.argsort(scores)[::-1][:top_k]
         return [SearchResult(self.documents[i], float(scores[i])) for i in indices]
 
@@ -129,10 +145,18 @@ class HybridRetriever:
             batch_size=batch_size,
         )
 
-    def search(self, query: str, top_k: int = 5) -> list[SearchResult]:
+    def search(
+        self,
+        query: str,
+        top_k: int = 5,
+        category: str = "all",
+    ) -> list[SearchResult]:
         bm25_scores = normalize(self.bm25.score(query))
         semantic_scores = normalize(self.semantic.score(query))
         hybrid_scores = self.alpha * bm25_scores + (1 - self.alpha) * semantic_scores
+        if category != "all":
+            hybrid_scores = hybrid_scores.copy()
+            hybrid_scores[[doc.category != category for doc in self.documents]] = -np.inf
         indices = np.argsort(hybrid_scores)[::-1][:top_k]
         return [
             SearchResult(

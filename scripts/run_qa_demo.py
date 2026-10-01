@@ -33,6 +33,7 @@ def parse_args() -> argparse.Namespace:
         help="Optional Hugging Face text2text-generation model",
     )
     parser.add_argument("--top-k", type=int, default=5)
+    parser.add_argument("--category", default="all")
     parser.add_argument(
         "--reranker-model",
         default=FINAL_RERANKER_MODEL,
@@ -95,7 +96,13 @@ def main() -> None:
         if question.lower() == "exit":
             break
         if question:
-            print_response(pipeline.answer(question, top_k=args.top_k))
+            print_response(
+                pipeline.answer(
+                    question,
+                    top_k=args.top_k,
+                    category=args.category,
+                )
+            )
 
 
 if __name__ == "__main__":

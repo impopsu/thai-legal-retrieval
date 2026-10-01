@@ -65,6 +65,25 @@ clearly relevant theft provision in the smoke test. This is recorded as an
 error-analysis and corpus-coverage issue; the system must not generate a legal
 answer when its evidence is not clearly relevant.
 
+## Context retrieval metrics
+
+Context quality is evaluated separately from answer quality by comparing
+retrieved `unique_key` values with each row's `positive_contexts`. On a
+validation sample of 100 questions using the final Hybrid MiniLM + reranker
+pipeline:
+
+| Metric | Score |
+|---|---:|
+| ContextRecall@1 | 0.6900 |
+| ContextRecall@3 | 0.8000 |
+| ContextRecall@5 | 0.8300 |
+| ContextPrecision@5 | 0.2060 |
+| ContextMRR@5 | 0.7498 |
+
+The sample result is a preliminary context-quality report. The full retrieval
+benchmark remains the primary aggregate result, and answer F1 must be computed
+separately after generated LLM predictions exist.
+
 ## Commands
 
 Validation benchmark:

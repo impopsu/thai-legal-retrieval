@@ -26,6 +26,7 @@ def main() -> None:
         default="data/processed/validation_retrieval.parquet",
     )
     parser.add_argument("--limit", type=int, default=100)
+    parser.add_argument("--category", default="all")
     parser.add_argument("--alpha", type=float, default=0.5)
     parser.add_argument(
         "--embeddings",
@@ -55,10 +56,15 @@ def main() -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8") as output:
         for _, row in validation.iterrows():
-            response = pipeline.answer(row["question"], top_k=5)
+            response = pipeline.answer(
+                row["question"],
+                top_k=5,
+                category=args.category,
+            )
             json.dump(
                 {
                     "question": response.question,
+                    "category": args.category,
                     "prompt": response.prompt,
                     "sources": [
                         {

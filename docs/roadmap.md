@@ -33,6 +33,10 @@ The project is report-ready for retrieval and grounded-prompt experiments. A
 real answer-quality result still requires selecting a generator and collecting
 human judgments using `docs/human-evaluation.md`.
 
+Dataset preparation now includes positive-context records and an extensible
+rule-based category filter. Context metrics are reported separately from answer
+metrics so retrieval quality and LLM answer quality are not conflated.
+
 Reranking is a core experiment for improving the basic similarity-based
 retrieval. It must be evaluated on validation before it is included in a final
 test configuration; it is not treated as optional by design.

@@ -64,6 +64,32 @@ and remaining blockers.
 See [docs/human-evaluation.md](docs/human-evaluation.md) for the answer review
 rubric and [docs/reproducibility.md](docs/reproducibility.md) for setup steps.
 
+Prepare question-level positive contexts and categories:
+
+```bash
+python scripts/prepare_qa_dataset.py
+```
+
+Evaluate retrieved contexts against `positive_contexts`:
+
+```bash
+python scripts/evaluate_context.py \
+	--questions data/processed/validation_retrieval.parquet \
+	--documents data/processed/legal_documents_categorized.csv \
+	--limit 100
+```
+
+Check GPU availability:
+
+```bash
+python scripts/check_hardware.py
+```
+
+See [docs/category-taxonomy.md](docs/category-taxonomy.md) for category rules
+and limitations.
+See [docs/context-metrics.md](docs/context-metrics.md) for the retrieved-context
+evaluation definitions.
+
 When generated answers are available as JSONL, evaluate them with:
 
 ```bash

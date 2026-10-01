@@ -2,6 +2,7 @@
 
 from .data import load_documents
 from .evaluation import evaluate_retrieval
+from .context_evaluation import evaluate_context_results
 from .models import LegalDocument, SearchResult
 from .qa import LegalQAPipeline
 from .retrieval import BM25Retriever, HybridRetriever, SemanticRetriever
@@ -14,5 +15,6 @@ __all__ = [
     "SearchResult",
     "SemanticRetriever",
     "evaluate_retrieval",
+    "evaluate_context_results",
     "load_documents",
 ]

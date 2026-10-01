@@ -7,6 +7,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from legal_qa import BM25Retriever, HybridRetriever, LegalQAPipeline, load_documents
+from legal_qa.categories import CATEGORY_LABELS
 from legal_qa.reranking import CrossEncoderReranker
 
 
@@ -29,15 +30,16 @@ pre { white-space: pre-wrap; background: #f4f4f4; padding: 1rem; }
 <body>
 <h1>Thai Legal QA</h1>
 <p>ระบบค้น evidence กฎหมาย จัดอันดับ และเตรียม grounded prompt</p>
+<select id="category">{category_options}</select>
 <textarea id="question" placeholder="เช่น ถ้าขโมยของคนอื่น มีความผิดอะไร"></textarea>
 <br><button onclick="ask()">ค้นหาข้อมูล</button>
 <h2>ผลลัพธ์</h2><div id="output"></div>
 <script>
 async function ask() {
   const question = document.getElementById('question').value;
-  const response = await fetch('/api/ask', {
+    const response = await fetch('/api/ask', {
     method: 'POST', headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({question})
+    body: JSON.stringify({question, category: document.getElementById('category').value})
   });
   const data = await response.json();
   const output = document.getElementById('output');
@@ -76,7 +78,8 @@ def make_handler(pipeline):
             if not question:
                 self._json({"error": "กรุณาพิมพ์คำถาม"}, status=400)
                 return
-            response = pipeline.answer(question, top_k=5)
+            category = str(payload.get("category", "all"))
+            response = pipeline.answer(question, top_k=5, category=category)
             self._json({
                 "answer": response.answer,
                 "answer_status": (
@@ -143,6 +146,12 @@ def main():
     if not args.no_reranker:
         reranker = CrossEncoderReranker(args.reranker_model)
     pipeline = LegalQAPipeline(retriever, reranker=reranker)
+    category_options = "".join(
+        f'<option value="{key}">{label}</option>'
+        for key, label in CATEGORY_LABELS.items()
+    )
+    global HTML
+    HTML = HTML.replace("{category_options}", category_options)
     server = ThreadingHTTPServer((args.host, args.port), make_handler(pipeline))
     print(f"เปิดเว็บ demo ที่ http://{args.host}:{args.port}")
     try:

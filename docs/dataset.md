@@ -24,6 +24,12 @@ The current processed document index is generated in
 should be described explicitly in reports because the benchmark labels provide
 the contexts used to build this local index.
 
+For question-level experiments, run `scripts/prepare_qa_dataset.py`. It creates
+`data/processed/qa_records.parquet`, one row per positive context, with question,
+positive context, positive answer, metadata and an extensible rule-based legal
+category. It also creates
+`data/processed/legal_documents_categorized.csv` for category-filtered retrieval.
+
 ## Evaluation protocol
 
 - The official test Parquet remains untouched.
