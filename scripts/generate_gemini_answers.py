@@ -1,4 +1,5 @@
 import argparse
+import getpass
 import json
 import os
 import random
@@ -70,10 +71,9 @@ def main() -> None:
     args = parse_args()
     api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
-        raise RuntimeError(
-            "GEMINI_API_KEY is not set. Set it in the terminal environment; "
-            "the key is never accepted as a command-line argument."
-        )
+        api_key = getpass.getpass("GEMINI_API_KEY: ").strip()
+    if not api_key:
+        raise RuntimeError("A Gemini API key is required")
 
     from google import genai
 

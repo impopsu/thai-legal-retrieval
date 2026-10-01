@@ -125,6 +125,9 @@ Final evidence: top-5
 | Hybrid MiniLM baseline | 0.5882 | 0.7435 | 0.7990 | 0.6701 |
 | Hybrid MiniLM + reranker | 0.7194 | 0.8354 | 0.8626 | 0.7790 |
 
+แถว BM25 และ Semantic MiniLM ในตาราง validation ยืนยันได้จาก
+`results/retrieval_benchmark_validation_bm25_minilm.csv`
+
 ## 6. การประเมินบริบท
 
 เปรียบเทียบบริบทที่ค้นพบกับ `positive_contexts` โดยใช้ `unique_key` ของเอกสาร
@@ -138,14 +141,15 @@ python scripts/evaluate_context.py \
   --limit 100
 ```
 
-ผลตัวอย่างจากชุดตรวจสอบจำนวน 100 คำถาม:
+ผลจริงจากชุดตรวจสอบจำนวน 100 คำถาม บันทึกไว้ใน
+`results/context_metrics.csv`:
 
 ```text
 ContextRecall@1:     0.6900
 ContextRecall@3:     0.8000
 ContextRecall@5:     0.8300
 ContextPrecision@5:  0.2060
-ContextMRR@5:        0.7498
+ContextMRR@5:        0.749833
 ```
 
 ## 7. การประเมินคำตอบจาก Gemini
@@ -157,10 +161,15 @@ Model: gemini-3.5-flash-lite
 Temperature: 0.0
 ```
 
-ชุดตรวจสอบ 100 คำถาม:
+ชุดตรวจสอบ 100 คำถาม โดยคำนวณจาก
+`results/qa_predictions_validation_100.jsonl` และบันทึกใน
+`results/answer_metrics_validation_100.csv`:
 
 ```text
 F1 ของโทเคนคำตอบ:       0.395647
+ROUGE-1 (F1):            0.395647
+ROUGE-2 (F1):            0.281292
+ROUGE-L (F1):            0.302869
 การอ้างอิงถูกต้อง:        0.640000
 งดตอบ:                   0.280000
 ```
@@ -169,6 +178,9 @@ F1 ของโทเคนคำตอบ:       0.395647
 
 ```text
 F1 ของโทเคนคำตอบ:       0.487709
+ROUGE-1 (F1):            0.487709
+ROUGE-2 (F1):            0.390759
+ROUGE-L (F1):            0.371400
 การอ้างอิงถูกต้อง:        0.800000
 งดตอบ:                   0.130000
 ```
@@ -192,6 +204,13 @@ python scripts/evaluate_answers.py \
   --references data/processed/validation_retrieval.parquet \
   --output results/answer_metrics_validation_100.csv
 ```
+
+ไฟล์คำตอบ validation และ test จำนวน 100 คำถามสร้างสำเร็จครบชุดละ 100/100 รายการ
+โดยไม่มีข้อผิดพลาด ตัวเลขทั้งสองชุดสร้างด้วย API key ที่ป้อนแบบซ่อนค่าและไม่ได้
+บันทึกลง repository ตัวเลขชุดหลักใน
+`results/answer_metrics.csv` มาจากคำตอบที่สำเร็จเพียง 13 จาก 100 รายการ และมี
+ค่า F1 เฉลี่ย 0.032906, ROUGE-1 0.032906, ROUGE-2 0.021367 และ ROUGE-L 0.027276
+เนื่องจากอีก 87 รายการเป็นข้อผิดพลาดจากโควต้าเดิม
 
 เครื่องมือสร้างคำตอบรองรับการลองใหม่พร้อมหน่วงเวลา การทำงานต่อจากรายการเดิม
 และการบันทึกข้อผิดพลาด โดยอ่าน API key จาก `GEMINI_API_KEY` เท่านั้น
