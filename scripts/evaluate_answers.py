@@ -22,7 +22,7 @@ def main() -> None:
         row["question"]: row.to_dict()
         for _, row in references.iterrows()
     }
-    scores = []
+    latest_predictions = {}
     with Path(args.predictions).open(encoding="utf-8") as file:
         for line_number, line in enumerate(file, start=1):
             prediction = json.loads(line)
@@ -31,10 +31,15 @@ def main() -> None:
                 raise ValueError(
                     f"Prediction line {line_number} has no matching reference question"
                 )
-            scores.append({
-                "question": question,
-                **evaluate_answer(prediction, reference_by_question[question]),
-            })
+            latest_predictions[question] = prediction
+
+    scores = [
+        {
+            "question": question,
+            **evaluate_answer(prediction, reference_by_question[question]),
+        }
+        for question, prediction in latest_predictions.items()
+    ]
 
     if not scores:
         raise ValueError("Prediction file is empty")
