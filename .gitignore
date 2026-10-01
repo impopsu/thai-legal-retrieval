@@ -56,7 +56,6 @@ build/
 # Temporary files
 tmp/
 temp/
-EOF
 # Generated QA evaluation files
 results/human_eval_50.jsonl
 results/human_eval_50_results.jsonl

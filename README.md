@@ -6,9 +6,9 @@ semantic search, hybrid retrieval and reranking.
 ## Current status
 
 The reusable core is in `legal_qa/`. Original experiments remain in `experiments/`
-for comparison. No retrieval method is selected as the final production method
-yet; BM25, Hybrid MiniLM, BGE-M3 and Hybrid BGE-M3 must be compared under the
-same evaluation protocol first. The hybrid score convention is:
+for comparison. The selected final pipeline is Hybrid MiniLM with alpha `0.5`,
+candidate top-20 and Cross-Encoder reranking to top-5. The hybrid score
+convention is:
 
 ```text
 hybrid_score = alpha * normalized_bm25 + (1 - alpha) * normalized_semantic
@@ -116,36 +116,3 @@ python scripts/evaluate_answers.py \
 
 The generator resumes successful records and logs failed records without
 printing the API key.
-
-When generated answers are available as JSONL, evaluate them with:
-
-```bash
-python scripts/evaluate_answers.py --predictions results/qa_predictions.jsonl
-```
-
-Export grounded prompts for an external or future LLM:
-
-```bash
-python scripts/export_qa_prompts.py --limit 100
-```
-
-Generate answers with Gemini. Set `GEMINI_API_KEY` directly in the terminal;
-never put it in a file or command-line argument:
-
-```bash
-python scripts/export_qa_prompts.py \
-	--questions data/processed/validation_retrieval.parquet \
-	--limit 100 \
-	--output results/qa_prompts_validation_100.jsonl
-
-python scripts/generate_gemini_answers.py \
-	--input results/qa_prompts_validation_100.jsonl \
-	--output results/qa_predictions_validation_100.jsonl \
-	--model gemini-3.5-flash-lite \
-	--retry-errors
-
-python scripts/evaluate_answers.py \
-	--predictions results/qa_predictions_validation_100.jsonl \
-	--references data/processed/validation_retrieval.parquet \
-	--output results/answer_metrics_validation_100.csv
-```

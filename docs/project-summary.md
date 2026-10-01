@@ -30,7 +30,7 @@ Local data:
 
 ```text
 data/raw/train-00000-of-00001.parquet
- data/raw/test-00000-of-00001.parquet
+data/raw/test-00000-of-00001.parquet
 ```
 
 Current split:
