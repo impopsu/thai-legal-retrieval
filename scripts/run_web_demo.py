@@ -109,7 +109,11 @@ def make_handler(pipeline):
             self.send_header("Content-Type", "application/json; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
             self.end_headers()
-            self.wfile.write(body)
+            try:
+                self.wfile.write(body)
+            except BrokenPipeError:
+                # The client may close a request while the model is responding.
+                pass
 
         def log_message(self, format, *args):
             return
