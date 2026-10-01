@@ -106,13 +106,13 @@ python scripts/export_qa_prompts.py \
 	--output results/qa_prompts_validation_100.jsonl
 ```
 
-Generate answers with Gemini 3.1 Pro Preview:
+Generate answers with Gemini 2.5 Flash-Lite:
 
 ```bash
 python scripts/generate_gemini_answers.py \
 	--input results/qa_prompts_validation_100.jsonl \
 	--output results/qa_predictions_validation_100.jsonl \
-	--model gemini-3.1-pro-preview
+	--model gemini-2.5-flash-lite
 ```
 
 Evaluate answer F1 and citations:

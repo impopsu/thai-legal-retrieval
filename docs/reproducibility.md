@@ -42,7 +42,7 @@ Git. Recreate them with the commands above when setting up a new environment.
 
 ## Gemini generator
 
-The answer generator uses model `gemini-3.1-pro-preview` and reads
+The answer generator uses model `gemini-2.5-flash-lite` and reads
 `GEMINI_API_KEY` only from the environment. It uses temperature `0.0`, retries
 transient errors with exponential backoff, resumes successful JSONL records and
 records non-transient failures without stopping the whole batch.
