@@ -91,6 +91,7 @@ See [docs/context-metrics.md](docs/context-metrics.md) for the retrieved-context
 evaluation definitions.
 See [docs/teacher-checklist.md](docs/teacher-checklist.md) for the commands and
 points to present in the next meeting.
+See [docs/final-results.md](docs/final-results.md) for final reportable metrics.
 
 ## Gemini answer generation
 
@@ -152,7 +153,8 @@ python scripts/export_qa_prompts.py \
 python scripts/generate_gemini_answers.py \
 	--input results/qa_prompts_validation_100.jsonl \
 	--output results/qa_predictions_validation_100.jsonl \
-	--model gemini-3.1-pro-preview
+	--model gemini-3.5-flash-lite \
+	--retry-errors
 
 python scripts/evaluate_answers.py \
 	--predictions results/qa_predictions_validation_100.jsonl \

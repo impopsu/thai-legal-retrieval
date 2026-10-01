@@ -57,6 +57,13 @@ python scripts/evaluate_answers.py \
 
 Metrics คือ answer token F1, citation correctness และ abstention
 
+ผลที่รันแล้ว:
+
+```text
+Validation 100: F1=0.395647, citation=0.640000, abstained=0.280000
+Test 100:       F1=0.487709, citation=0.800000, abstained=0.130000
+```
+
 สร้างคำตอบ validation 100 ข้อด้วย Gemini 3.5 Flash-Lite:
 
 ```bash

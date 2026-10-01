@@ -63,6 +63,9 @@ results/human_eval_50_results.jsonl
 results/qa_predictions.jsonl
 results/qa_prompts_validation.jsonl
 results/qa_prompts_validation_100.jsonl
+results/qa_predictions_validation_100.jsonl
+results/qa_predictions_test_100.jsonl
+results/qa_prompts_test_100.jsonl
 
 # Keep project dataset files in Git LFS
 !data/raw/*.parquet
