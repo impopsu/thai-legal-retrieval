@@ -89,6 +89,8 @@ See [docs/category-taxonomy.md](docs/category-taxonomy.md) for category rules
 and limitations.
 See [docs/context-metrics.md](docs/context-metrics.md) for the retrieved-context
 evaluation definitions.
+See [docs/teacher-checklist.md](docs/teacher-checklist.md) for the commands and
+points to present in the next meeting.
 
 When generated answers are available as JSONL, evaluate them with:
 
