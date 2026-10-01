@@ -6,7 +6,7 @@ import time
 from pathlib import Path
 
 
-DEFAULT_MODEL = "gemini-2.5-flash-lite"
+DEFAULT_MODEL = "gemini-3.5-flash-lite"
 TRANSIENT_MARKERS = (
     "429", "500", "502", "503", "504", "rate limit",
     "resource exhausted", "temporarily unavailable", "timeout", "timed out",

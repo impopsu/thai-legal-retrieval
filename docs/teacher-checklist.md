@@ -57,13 +57,14 @@ python scripts/evaluate_answers.py \
 
 Metrics คือ answer token F1, citation correctness และ abstention
 
-สร้างคำตอบ validation 100 ข้อด้วย Gemini 2.5 Flash-Lite:
+สร้างคำตอบ validation 100 ข้อด้วย Gemini 3.5 Flash-Lite:
 
 ```bash
 python scripts/generate_gemini_answers.py \
   --input results/qa_prompts_validation_100.jsonl \
   --output results/qa_predictions_validation_100.jsonl \
-  --model gemini-2.5-flash-lite
+  --model gemini-3.5-flash-lite \
+  --retry-errors
 ```
 
 ## 5. Hardware
