@@ -56,13 +56,8 @@ a faster baseline. Without a generator model, the demo displays ranked legal
 evidence and the grounded prompt. Pass `--generator-model` to use a compatible
 Hugging Face text-to-text model for answer generation.
 
-See [docs/roadmap.md](docs/roadmap.md) for scope, metrics and next milestones.
-See [docs/dataset.md](docs/dataset.md) for dataset source, papers and the
-untouched-test evaluation protocol.
-See [docs/p0-status.md](docs/p0-status.md) for the current retrieval benchmark
-and remaining blockers.
-See [docs/human-evaluation.md](docs/human-evaluation.md) for the answer review
-rubric and [docs/reproducibility.md](docs/reproducibility.md) for setup steps.
+See [docs/project-summary.md](docs/project-summary.md) for dataset, methods,
+metrics, final results, limitations and presentation notes.
 
 Prepare question-level positive contexts and categories:
 
@@ -85,13 +80,6 @@ Check GPU availability:
 python scripts/check_hardware.py
 ```
 
-See [docs/category-taxonomy.md](docs/category-taxonomy.md) for category rules
-and limitations.
-See [docs/context-metrics.md](docs/context-metrics.md) for the retrieved-context
-evaluation definitions.
-See [docs/teacher-checklist.md](docs/teacher-checklist.md) for the commands and
-points to present in the next meeting.
-See [docs/final-results.md](docs/final-results.md) for final reportable metrics.
 
 ## Gemini answer generation
 
