@@ -13,7 +13,7 @@ FINAL_RERANKER_MODEL = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run the Thai legal QA demo")
+    parser = argparse.ArgumentParser(description="เรียกใช้เดโมระบบถามตอบกฎหมายไทย")
     parser.add_argument(
         "--documents",
         default="data/processed/legal_documents.csv",
@@ -30,19 +30,19 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--generator-model",
-        help="Optional Hugging Face text2text-generation model",
+        help="โมเดล Hugging Face สำหรับสร้างคำตอบ (ไม่ระบุก็ได้)",
     )
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--category", default="all")
     parser.add_argument(
         "--reranker-model",
         default=FINAL_RERANKER_MODEL,
-        help="Hugging Face cross-encoder reranker model",
+        help="โมเดลจัดอันดับซ้ำของ Hugging Face",
     )
     parser.add_argument(
         "--no-reranker",
         action="store_true",
-        help="Disable reranking for a faster baseline demo",
+        help="ปิดการจัดอันดับซ้ำเพื่อให้เดโมทำงานเร็วขึ้น",
     )
     return parser.parse_args()
 
@@ -59,8 +59,8 @@ def print_response(response) -> None:
         print("\n===== คำตอบ =====")
         print(response.answer)
     else:
-        print("\nยังไม่ได้โหลด answer generator")
-        print("ระบบแสดง evidence และ grounded prompt เพื่อใช้ต่อกับ LLM")
+        print("\nยังไม่ได้โหลดเครื่องมือสร้างคำตอบ")
+        print("ระบบแสดงหลักฐานและคำถามพร้อมหลักฐานเพื่อใช้ต่อกับโมเดลภาษา")
 
 
 def main() -> None:

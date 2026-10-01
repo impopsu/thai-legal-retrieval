@@ -18,7 +18,7 @@ HTML = """<!doctype html>
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<title>Thai Legal QA</title>
+<title>ระบบถามตอบกฎหมายไทย</title>
 <style>
 body { font-family: sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
 textarea { width: 100%; min-height: 90px; padding: .75rem; }
@@ -28,8 +28,8 @@ pre { white-space: pre-wrap; background: #f4f4f4; padding: 1rem; }
 </style>
 </head>
 <body>
-<h1>Thai Legal QA</h1>
-<p>ระบบค้น evidence กฎหมาย จัดอันดับ และเตรียม grounded prompt</p>
+<h1>ระบบถามตอบกฎหมายไทย</h1>
+<p>ระบบค้นหาหลักฐานทางกฎหมาย จัดอันดับ และเตรียมคำถามพร้อมหลักฐาน</p>
 <select id="category">{category_options}</select>
 <textarea id="question" placeholder="เช่น ถ้าขโมยของคนอื่น มีความผิดอะไร"></textarea>
 <br><button onclick="ask()">ค้นหาข้อมูล</button>
@@ -44,12 +44,12 @@ async function ask() {
   const data = await response.json();
   const output = document.getElementById('output');
   if (data.error) { output.textContent = data.error; return; }
-    output.innerHTML = '<h3>สถานะคำตอบ</h3><p>' + data.answer_status + '</p>' +
+      output.innerHTML = '<h3>สถานะคำตอบ</h3><p>' + data.answer_status + '</p>' +
         '<h3>แหล่งข้อมูล</h3>' + data.sources.map(source =>
             '<div class="source"><b>' + source.citation + '</b>' +
             '<p>คะแนน: ' + source.score.toFixed(4) + '</p>' +
             '<p>' + source.context + '</p></div>').join('') +
-        '<h3>Grounded prompt</h3><pre>' + data.prompt + '</pre>';
+          '<h3>คำถามพร้อมหลักฐาน</h3><pre>' + data.prompt + '</pre>';
 }
 </script>
 </body></html>"""
@@ -83,9 +83,9 @@ def make_handler(pipeline):
             self._json({
                 "answer": response.answer,
                 "answer_status": (
-                    "ยังไม่ได้เชื่อม LLM generator; แสดง evidence และ prompt แทน"
+                    "ยังไม่ได้เชื่อมต่อเครื่องมือสร้างคำตอบ จึงแสดงหลักฐานและคำถามพร้อมหลักฐานแทน"
                     if response.answer is None
-                    else "สร้างคำตอบจาก grounded context แล้ว"
+                    else "สร้างคำตอบจากบริบทที่มีหลักฐานอ้างอิงแล้ว"
                 ),
                 "prompt": response.prompt,
                 "sources": [
@@ -122,7 +122,7 @@ def make_handler(pipeline):
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description="Run the Thai Legal QA web demo")
+    parser = argparse.ArgumentParser(description="เรียกใช้เดโมระบบถามตอบกฎหมายไทยบนเว็บ")
     parser.add_argument("--documents", default="data/processed/legal_documents.csv")
     parser.add_argument("--retriever", choices=("bm25", "hybrid"), default="hybrid")
     parser.add_argument("--alpha", type=float, default=0.5)
@@ -157,7 +157,7 @@ def main():
     global HTML
     HTML = HTML.replace("{category_options}", category_options)
     server = ThreadingHTTPServer((args.host, args.port), make_handler(pipeline))
-    print(f"เปิดเว็บ demo ที่ http://{args.host}:{args.port}")
+    print(f"เปิดเดโมบนเว็บที่ http://{args.host}:{args.port}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

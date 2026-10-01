@@ -1,4 +1,4 @@
-# Thai Legal QA
+# ระบบถามตอบและค้นหากฎหมายไทย
 
 การทำ legal retrieval และ grounded question answering ภาษาไทยโดยใช้ BM25,
 multilingual semantic search, hybrid retrieval และ reranking
@@ -85,7 +85,7 @@ python scripts/export_qa_prompts.py \
 	--output results/qa_prompts_validation_100.jsonl
 ```
 
-Generate answers with Gemini 3.5 Flash-Lite:
+สร้างคำตอบด้วย Gemini 3.5 Flash-Lite:
 
 ```bash
 python scripts/generate_gemini_answers.py \
@@ -95,7 +95,7 @@ python scripts/generate_gemini_answers.py \
 	--retry-errors
 ```
 
-Evaluate answer F1 and citations:
+ประเมินค่า F1 ของคำตอบและความถูกต้องของการอ้างอิง:
 
 ```bash
 python scripts/evaluate_answers.py \
@@ -104,5 +104,5 @@ python scripts/evaluate_answers.py \
 	--output results/answer_metrics_validation_100.csv
 ```
 
-The generator resumes successful records and logs failed records without
-printing the API key.
+เครื่องมือสร้างคำตอบจะทำรายการที่สำเร็จต่อจากเดิม และบันทึกรายการที่ล้มเหลว
+โดยไม่แสดง API key

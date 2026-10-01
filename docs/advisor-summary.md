@@ -2,7 +2,7 @@
 
 ## 1. ชื่อโครงงาน
 
-**Thai Legal Question Answering and Retrieval System**
+**ระบบถามตอบและค้นหากฎหมายไทย**
 
 เป็นโครงงานระบบตอบคำถามและ Retrieval ด้านกฎหมายไทย โดยมุ่งเน้นการค้นหา legal sections ที่เกี่ยวข้องและจัดเตรียม evidence สำหรับการสร้างคำตอบแบบ grounded
 
@@ -102,15 +102,15 @@ Grounded LLM Answer + Citation
 
 ## 7. วิธีการที่ทดลอง
 
-### BM25
+### วิธี BM25
 
 Lexical Retrieval ที่อาศัย term matching ใช้เป็น baseline สำหรับคำศัพท์กฎหมายที่ตรงกันระหว่าง question และ legal section
 
-### Semantic MiniLM
+### วิธี Semantic MiniLM
 
 ใช้ sentence embedding model ที่อาศัย MiniLM แปลง questions และ legal sections เป็น dense vectors แล้วใช้ semantic similarity ในการ Retrieval
 
-### Hybrid MiniLM
+### วิธี Hybrid MiniLM
 
 รวมคะแนน BM25 และ Semantic Retrieval ด้วย weighted hybrid score ตาม convention:
 
@@ -120,31 +120,31 @@ hybrid_score = alpha * normalized_bm25 + (1 - alpha) * normalized_semantic
 
 ค่า `alpha = 0.5` ถูกเลือกจาก Validation และใช้เป็น Retrieval stage ของ final pipeline
 
-### BGE-M3
+### วิธี BGE-M3
 
 ใช้ `BAAI/bge-m3` เป็น multilingual embedding model สำหรับการเปรียบเทียบ Semantic Retrieval ที่มีขนาดและความสามารถแตกต่างจาก MiniLM ผลที่อ้างอิงในเอกสารปัจจุบันเป็น Validation comparison ไม่ใช่ final pipeline
 
-### Hybrid BGE-M3
+### วิธี Hybrid BGE-M3
 
 รวม BM25 กับ BGE-M3 embeddings และทดลองค่า `alpha` หลายค่าใน experiment script มีผลลัพธ์จากสองเส้นทางที่ต้องแยกกัน:
 
 - `results/retrieval_benchmark.csv` ระบุชัดว่าเป็น `validation` และเป็นผล authoritative สำหรับ Hybrid BGE-M3 validation
 - `results/hybrid_bge_m3_results.csv` สร้างจาก script ที่โหลด `data/raw/test-00000-of-00001.parquet` แต่ output ไม่บันทึก split จึงไม่ควรนำไปเรียกว่า Validation result
 
-### Cross-Encoder Reranker
+### วิธี Cross-Encoder Reranker
 
 ใช้ `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` ให้คะแนน question กับ candidate section ร่วมกัน โดยรับ candidate top-20 จาก Hybrid MiniLM และเลือก evidence top-5
 
 ## 8. การทดลองและการประเมินผล
 
-### Metrics
+### ตัวชี้วัด
 
 - **Recall@1**: มี gold context อยู่ในผลลัพธ์อันดับ 1 หรือไม่
 - **Recall@3**: มี gold context อยู่ในผลลัพธ์ 3 อันดับแรกหรือไม่
 - **Recall@5**: มี gold context อยู่ในผลลัพธ์ 5 อันดับแรกหรือไม่
 - **MRR / MRR@5**: ประเมินอันดับของ gold context โดย MRR@5 จำกัดการพิจารณาไว้ที่ top-five ในรายงานที่ระบุเช่นนั้น
 
-### Validation
+### ชุดตรวจสอบ
 
 ใช้ Validation split จำนวน 1,643 questions เพื่อเลือก `alpha`, model/configuration และ Reranker settings โดยไม่ใช้ official Test Set สำหรับการ tune
 
@@ -156,11 +156,11 @@ Validation ที่ตรวจสอบได้โดยตรงจากผ
 
 `docs/p0-status.md` ยังรายงานค่า Validation ของ BM25 และ Semantic MiniLM แต่ไม่พบ CSV เฉพาะแถวเหล่านี้จาก result files ที่มีอยู่ใน repository จึงควรถือเป็นค่าที่รายงานใน status document จนกว่าจะตรวจสอบผลต้นทางเพิ่มเติม
 
-### Test Set
+### ชุดทดสอบ
 
 official Test Set มี 3,742 questions และถูกใช้สำหรับ final reporting ผล baseline อยู่ใน `results/final_test_results.csv` ส่วนผล final Reranker อยู่ใน `results/final_reranker_test_results.csv`
 
-### Human Evaluation และ Sampled Verification
+### การประเมินโดยมนุษย์และการตรวจสอบตัวอย่าง
 
 มีการตรวจสอบตัวอย่าง 50 questions จาก Validation โดยดู retrieved evidence และ gold positive contexts ผลที่รายงานใน `docs/final-report.md` และคำนวณจาก `results/human_eval_50_results.jsonl` คือ:
 
@@ -172,7 +172,7 @@ official Test Set มี 3,742 questions และถูกใช้สำหร
 
 โครงงานยังมี Human Evaluation Protocol สำหรับให้ผู้ประเมินให้คะแนน answer correctness, evidence faithfulness, citation correctness, completeness และ abstention behavior แต่ยังไม่มีผล expert evaluation แบบเต็มชุดที่ยืนยันไว้ในรายงานนี้
 
-### Error Analysis
+### การวิเคราะห์ข้อผิดพลาด
 
 ข้อผิดพลาดหลักที่บันทึกไว้ ได้แก่:
 
@@ -184,7 +184,7 @@ official Test Set มี 3,742 questions และถูกใช้สำหร
 
 ## 9. ตารางผลการทดลอง
 
-### Test Set: Retrieval Baselines
+### ชุดทดสอบ: วิธีค้นหาพื้นฐาน
 
 ค่าด้านล่างมาจาก `results/final_test_results.csv` และแสดงเป็นเปอร์เซ็นต์สำหรับ Recall:
 
@@ -194,7 +194,7 @@ official Test Set มี 3,742 questions และถูกใช้สำหร
 | Semantic MiniLM | 33.54% | 48.61% | 55.13% | 0.4168 |
 | Hybrid alpha=0.5 | 58.82% | 74.35% | 79.90% | 0.6701 |
 
-### Test Set: Final Reranker Pipeline
+### ชุดทดสอบ: กระบวนการ Reranker ขั้นสุดท้าย
 
 ค่าด้านล่างมาจาก `results/final_reranker_test_results.csv` ซึ่งมี `num_questions=3742`, `candidate_k=20`, `top_k=5` และ `alpha=0.5`:
 
@@ -203,7 +203,7 @@ official Test Set มี 3,742 questions และถูกใช้สำหร
 | Hybrid MiniLM baseline | 58.82% | 74.35% | 79.90% | 0.6701 |
 | Hybrid MiniLM + Cross-Encoder Reranker | 71.94% | 83.54% | 86.26% | 0.7790 |
 
-### Validation: Hybrid MiniLM และ Reranker
+### ชุดตรวจสอบ: Hybrid MiniLM และ Reranker
 
 ค่าด้านล่างตรงกับ `results/validation_alpha_results.csv` และ `results/reranker_validation_results.csv`:
 
@@ -212,7 +212,7 @@ official Test Set มี 3,742 questions และถูกใช้สำหร
 | Hybrid MiniLM alpha=0.5 | 0.5673 | 0.7206 | 0.7669 | 0.6462 |
 | Hybrid MiniLM + Cross-Encoder Reranker | 0.6999 | 0.8223 | 0.8497 | 0.7618 |
 
-### Validation: BGE-M3 Comparison
+### ชุดตรวจสอบ: การเปรียบเทียบ BGE-M3
 
 ค่าด้านล่างมาจาก `results/retrieval_benchmark.csv` ซึ่งระบุ `split=validation` และ `num_questions=1643`:
 
@@ -223,7 +223,7 @@ official Test Set มี 3,742 questions และถูกใช้สำหร
 
 ผล Hybrid BGE-M3 ที่ `R@1 = 0.6409` เป็นค่า Validation ที่ใช้ใน `docs/p0-status.md` ส่วนค่า `R@1 = 0.6638` จาก `results/hybrid_bge_m3_results.csv` เป็นผลจากอีก experiment path ที่โหลด Test Parquet แต่ไม่มี split metadata จึงไม่ใช้แทนค่า Validation และไม่ควรสรุปเป็นผล Test Set ที่เปรียบเทียบอย่างเป็นทางการ
 
-### Validation values ที่ยังต้องตรวจสอบต้นทางเพิ่มเติม
+### ค่าชุดตรวจสอบที่ยังต้องตรวจสอบต้นทางเพิ่มเติม
 
 `docs/p0-status.md` รายงานค่าต่อไปนี้:
 
@@ -364,7 +364,7 @@ Error patterns ที่ยืนยันจากเอกสารโคร�
 - `docs/roadmap.md`
 - `README.md`
 
-### Source code และ scripts
+### ซอร์สโค้ดและสคริปต์
 
 - `legal_qa/retrieval.py`
 - `legal_qa/reranking.py`
@@ -377,7 +377,7 @@ Error patterns ที่ยืนยันจากเอกสารโคร�
 - `scripts/select_alpha.py`
 - `scripts/split_train_validation.py`
 
-### Result files
+### ไฟล์ผลลัพธ์
 
 - `results/final_test_results.csv`
 - `results/final_reranker_test_results.csv`
