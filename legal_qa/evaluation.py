@@ -11,12 +11,18 @@ def metrics_from_rankings(
     positive_indices,
     ks=(1, 3, 5),
     *,
+    skipped_no_ground_truth=0,
     skipped_missing_document=0,
+    skipped_missing_document_questions=0,
 ):
     recall_counts = {k: 0 for k in ks}
     reciprocal_rank_sum = 0.0
+    valid_questions = 0
     for ranking, positives in zip(rankings, positive_indices):
         positive_set = set(positives)
+        if not positive_set:
+            continue
+        valid_questions += 1
         for k in ks:
             if positive_set.intersection(ranking[:k]):
                 recall_counts[k] += 1
@@ -24,11 +30,16 @@ def metrics_from_rankings(
             if index in positive_set:
                 reciprocal_rank_sum += 1 / rank
                 break
-    total = len(positive_indices)
+    if valid_questions == 0:
+        raise ValueError("no questions have ground-truth documents in the corpus")
     return {
-        **{f"Recall@{k}": count / total for k, count in recall_counts.items()},
-        f"MRR@{max(ks)}": reciprocal_rank_sum / total,
+        **{f"Recall@{k}": count / valid_questions for k, count in recall_counts.items()},
+        f"MRR@{max(ks)}": reciprocal_rank_sum / valid_questions,
+        "total_questions": len(positive_indices),
+        "num_questions": valid_questions,
+        "skipped_no_ground_truth": skipped_no_ground_truth,
         "skipped_missing_document": skipped_missing_document,
+        "skipped_missing_document_questions": skipped_missing_document_questions,
     }
 
 
@@ -38,10 +49,13 @@ def _positive_indices(retriever, rows):
         for index, document in enumerate(retriever.documents)
     }
     positive_indices = []
+    skipped_no_ground_truth = 0
     skipped_missing_document = 0
+    skipped_missing_document_questions = 0
     for row in rows:
         positive_contexts = row["positive_contexts"]
         if positive_contexts is None or len(positive_contexts) == 0:
+            skipped_no_ground_truth += 1
             positive_indices.append([])
             continue
         row_indices = []
@@ -51,18 +65,32 @@ def _positive_indices(retriever, rows):
                 skipped_missing_document += 1
                 continue
             row_indices.append(document_index)
+        if not row_indices:
+            skipped_missing_document_questions += 1
         positive_indices.append(row_indices)
-    return positive_indices, skipped_missing_document
+    return (
+        positive_indices,
+        skipped_no_ground_truth,
+        skipped_missing_document,
+        skipped_missing_document_questions,
+    )
 
 
 def evaluate_score_matrix(retriever, rows, scores, ks=(1, 3, 5)):
     rankings = scores.argsort(axis=1)[:, ::-1]
-    positive_indices, skipped_missing_document = _positive_indices(retriever, rows)
+    (
+        positive_indices,
+        skipped_no_ground_truth,
+        skipped_missing_document,
+        skipped_missing_document_questions,
+    ) = _positive_indices(retriever, rows)
     return metrics_from_rankings(
         rankings,
         positive_indices,
         ks=ks,
+        skipped_no_ground_truth=skipped_no_ground_truth,
         skipped_missing_document=skipped_missing_document,
+        skipped_missing_document_questions=skipped_missing_document_questions,
     )
 
 
@@ -94,7 +122,12 @@ def evaluate_reranker(
         document.unique_key: index
         for index, document in enumerate(retriever.documents)
     }
-    positive_indices, skipped_missing_document = _positive_indices(retriever, rows)
+    (
+        positive_indices,
+        skipped_no_ground_truth,
+        skipped_missing_document,
+        skipped_missing_document_questions,
+    ) = _positive_indices(retriever, rows)
     rankings = []
     for row in rows:
         candidates = retriever.search(row["question"], top_k=candidate_k)
@@ -107,7 +140,9 @@ def evaluate_reranker(
         rankings,
         positive_indices,
         ks=ks,
+        skipped_no_ground_truth=skipped_no_ground_truth,
         skipped_missing_document=skipped_missing_document,
+        skipped_missing_document_questions=skipped_missing_document_questions,
     )
 
 
@@ -150,12 +185,19 @@ def evaluate_reranker_batch(
         document.unique_key: index
         for index, document in enumerate(retriever.documents)
     }
-    positive_indices, skipped_missing_document = _positive_indices(retriever, rows)
+    (
+        positive_indices,
+        skipped_no_ground_truth,
+        skipped_missing_document,
+        skipped_missing_document_questions,
+    ) = _positive_indices(retriever, rows)
     return metrics_from_rankings(
         rankings,
         positive_indices,
         ks=ks,
+        skipped_no_ground_truth=skipped_no_ground_truth,
         skipped_missing_document=skipped_missing_document,
+        skipped_missing_document_questions=skipped_missing_document_questions,
     )
 
 
@@ -168,7 +210,12 @@ def evaluate_retrieval(retriever, questions: Iterable[pd.Series], ks=(1, 3, 5)):
         document.unique_key: index
         for index, document in enumerate(retriever.documents)
     }
-    positive_indices, skipped_missing_document = _positive_indices(retriever, rows)
+    (
+        positive_indices,
+        skipped_no_ground_truth,
+        skipped_missing_document,
+        skipped_missing_document_questions,
+    ) = _positive_indices(retriever, rows)
     rankings = []
     for row in rows:
         results = retriever.search(row["question"], top_k=max_k)
@@ -180,5 +227,7 @@ def evaluate_retrieval(retriever, questions: Iterable[pd.Series], ks=(1, 3, 5)):
         rankings,
         positive_indices,
         ks=ks,
+        skipped_no_ground_truth=skipped_no_ground_truth,
         skipped_missing_document=skipped_missing_document,
+        skipped_missing_document_questions=skipped_missing_document_questions,
     )
