@@ -316,14 +316,15 @@ abstention ตาม [คู่มือประเมินคำตอบ](hu
 
 | Method | Avg latency (ms/question) | Peak RSS (MB) | Questions |
 |---|---:|---:|---:|
-| BM25 | 26.214 | 1118.723 | 100 |
-| MiniLM | 13.103 | 2167.488 | 100 |
-| Hybrid MiniLM | 32.826 | 2227.152 | 100 |
-| BGE-M3 | 25.913 | 3944.535 | 100 |
-| Hybrid MiniLM + reranker | 142.094 | 2398.039 | 100 |
+| BM25 | 24.818 | 1120.273 | 100 |
+| MiniLM | 12.706 | 2144.418 | 100 |
+| Hybrid MiniLM | 30.207 | 2229.637 | 100 |
+| BGE-M3 | 23.026 | 3619.578 | 100 |
+| Hybrid MiniLM + reranker | 136.590 | 2399.734 | 100 |
 
 ผลจริงอยู่ใน `results/runtime_benchmark.csv` วัดบน validation 100 คำถามครบทั้งห้าวิธี
-โดยนำผล BGE-M3 มารันบน Colab เนื่องจากการสร้าง embeddings บน CPU ในเครื่องนี้ใช้เวลานานเกินช่วงเวลาที่รันได้
+โดย benchmark รอบล่าสุดรันใน Colab environment เดียวกันทั้งห้าวิธี
+เพื่อให้การเปรียบเทียบ latency และ peak RSS อยู่ภายใต้สภาพแวดล้อมเดียวกัน
 
 Hybrid MiniLM + reranker ยังคงเป็น configuration หลัก เพราะเลือก encoder MiniLM
 ซึ่งมี peak RSS ต่ำกว่า BGE-M3 ใน benchmark นี้ ขณะที่ reranker เพิ่มคุณภาพการจัดอันดับ

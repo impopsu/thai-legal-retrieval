@@ -72,13 +72,15 @@ F1 นี้เป็น **retrieval F1** ไม่ใช่ answer Token F1 ห
 
 | Method | Avg latency (ms/question) | Peak RSS (MB) | Questions |
 |---|---:|---:|---:|
-| BM25 | 26.214 | 1118.723 | 100 |
-| MiniLM | 13.103 | 2167.488 | 100 |
-| Hybrid MiniLM | 32.826 | 2227.152 | 100 |
-| BGE-M3 | 25.913 | 3944.535 | 100 |
-| Hybrid MiniLM + reranker | 142.094 | 2398.039 | 100 |
+| BM25 | 24.818 | 1120.273 | 100 |
+| MiniLM | 12.706 | 2144.418 | 100 |
+| Hybrid MiniLM | 30.207 | 2229.637 | 100 |
+| BGE-M3 | 23.026 | 3619.578 | 100 |
+| Hybrid MiniLM + reranker | 136.590 | 2399.734 | 100 |
 
-ผลจริงอยู่ใน `results/runtime_benchmark.csv` ค่า BGE-M3 ได้มาจาก Colab เพราะการสร้าง embeddings ของ BGE-M3 บน CPU ในสภาพแวดล้อมพัฒนาใช้เวลานานเกินไป ตัวเลขเป็นผลจาก Colab run; CSV ปัจจุบันไม่มีคอลัมน์ระบุชนิด GPU/CPU จึงควรถือเป็นผลตามสภาพแวดล้อมที่บันทึก ไม่ใช่การเปรียบเทียบฮาร์ดแวร์แบบควบคุม
+ผลจริงอยู่ใน `results/runtime_benchmark.csv` โดย benchmark รอบล่าสุดรันทั้งห้าวิธีใน Colab environment เดียวกัน
+ใช้ validation 100 คำถามชุดเดียวกัน และใช้วิธีจับเวลาเดียวกัน เพื่อให้การเปรียบเทียบ latency และ peak RSS อยู่ภายใต้สภาพแวดล้อมเดียวกัน
+ตัวเลขจึงใช้เป็น benchmark ของ configuration ใน environment นี้ ไม่ได้หมายความว่าเป็นการเปรียบเทียบประสิทธิภาพฮาร์ดแวร์คนละเครื่อง
 
 Hybrid MiniLM + reranker ถูกเลือกเป็น configuration หลักจากสมดุลด้าน retrieval quality และ memory: ผล retrieval เดิมของ reranker ดีขึ้นจาก Hybrid baseline และ runtime RSS ต่ำกว่า BGE-M3 ใน benchmark นี้ อย่างไรก็ตาม BGE-M3 มี latency ต่ำกว่า Hybrid+Reranker ใน runtime table และ Recall@5 สูงกว่าใน retrieval comparison บางชุด จึงเป็น trade-off ไม่ใช่ผู้ชนะทุก metric
 
