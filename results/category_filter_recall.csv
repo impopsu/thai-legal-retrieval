@@ -1,0 +1,3 @@
+setting,category_source,Recall@5,questions,total_questions,skipped_no_ground_truth,skipped_missing_document
+unfiltered,majority category of mapped positive contexts,0.7491582491582492,99,100,1,0
+oracle_category_filter,majority category of mapped positive contexts,0.8148148148148148,99,100,1,0

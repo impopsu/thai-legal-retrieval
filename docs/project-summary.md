@@ -93,6 +93,19 @@ python scripts/run_web_demo.py --documents data/processed/legal_documents_catego
 ยังว่างเพื่อรอผู้ตรวจ จึงยังไม่มีค่า accuracy ที่ยืนยันโดยมนุษย์
 ดูขั้นตอนและวิธีสรุป accuracy ได้ใน [คู่มือตรวจหมวดกฎหมาย](category-review-guide.md)
 
+ผลของการกรองหมวดต่อ Hybrid MiniLM + reranker บน validation:
+
+| Setting | Recall@5 | คำถามที่ใช้ | ข้ามเพราะไม่มีเฉลย |
+|---|---:|---:|---:|
+| ไม่กรองหมวด | 0.749158 | 99 | 1 |
+| กรองด้วยหมวด oracle | 0.814815 | 99 | 1 |
+
+ผลจริงอยู่ใน `results/category_filter_recall.csv` ใช้ validation 100 คำถามเดียวกัน
+และกรองผู้สมัคร 20 รายการก่อน rerank เหลือ 5 รายการ หมวด oracle กำหนดจาก
+หมวดเสียงข้างมากของ positive contexts ที่ map เข้าเอกสารได้; หมวดดังกล่าวอิง
+auto-classifier ไม่ใช่ human-verified label ดังนั้นผลนี้เป็นการจำลองกรณีเลือกหมวด
+ถูก ไม่ใช่ผลความแม่นยำของ classifier
+
 ## 4. การตั้งค่าการค้นหาขั้นสุดท้าย
 
 ```text
