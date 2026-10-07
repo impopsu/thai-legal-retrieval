@@ -93,6 +93,11 @@ python scripts/run_web_demo.py --documents data/processed/legal_documents_catego
 ยังว่างเพื่อรอผู้ตรวจ จึงยังไม่มีค่า accuracy ที่ยืนยันโดยมนุษย์
 ดูขั้นตอนและวิธีสรุป accuracy ได้ใน [คู่มือตรวจหมวดกฎหมาย](category-review-guide.md)
 
+ไฟล์ `results/category_ai_review_draft.csv` เพิ่มข้อเสนอหมวดจาก rule classifier
+ที่รันกับชื่อกฎหมายและข้อความมาตรา โดยไม่ใช้ข้อความคำถาม ข้อเสนอนี้ยังมาจาก
+classifier เดิม ไม่ใช่การตรวจอิสระหรือ ground truth; คอลัมน์ `suggestion_matches_auto`
+เป็นเพียงการเทียบผลสอง input รูปแบบ ไม่ใช่ค่า category accuracy
+
 ผลของการกรองหมวดต่อ Hybrid MiniLM + reranker บน validation:
 
 | Setting | Recall@5 | คำถามที่ใช้ | ข้ามเพราะไม่มีเฉลย |
@@ -273,6 +278,9 @@ abstained:        0.130000
 40 รายการ แบ่งจาก validation และ test ชุดละ 20 รายการ แต่ละรายการมีคำถาม
 คำตอบที่สร้าง คำตอบอ้างอิง positive contexts และ retrieved sources พร้อมช่องคะแนน
 ที่เว้นว่างไว้ให้ผู้ประเมินกรอก จึงยังไม่มีผลคะแนน human evaluation ในขณะนี้
+มีไฟล์ `results/human_eval_ai_review_draft.jsonl` เป็นคะแนนและเหตุผลเบื้องต้นจาก AI
+แยกไว้ต่างหากเพื่อช่วยผู้ตรวจ ไฟล์นี้ไม่ใช่ human evaluation และคะแนนยังต้องได้รับ
+การยืนยันหรือแก้ไขจากผู้ประเมินก่อนสรุปผล
 
 ```bash
 python scripts/prepare_human_eval.py --sample-per-split 20 --seed 42
