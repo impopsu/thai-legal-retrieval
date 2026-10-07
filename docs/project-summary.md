@@ -152,6 +152,25 @@ Final evidence: top-5
 แถว BM25 และ Semantic MiniLM ในตาราง validation ยืนยันได้จาก
 `results/retrieval_benchmark_validation_bm25_minilm.csv`
 
+คำนวณ retrieval F1 เพิ่มบน 100 คำถามแรกของ test split โดยเฉลี่ย F1 รายคำถาม
+และข้ามคำถามที่ไม่มี ground-truth document ในคลัง ผลอยู่ใน
+`results/retrieval_f1_test_100.csv`:
+
+| Method | F1@1 | F1@3 | F1@5 |
+|---|---:|---:|---:|
+| BM25 | 0.7000 | 0.4150 | 0.2900 |
+| Semantic MiniLM | 0.3900 | 0.2700 | 0.1900 |
+| Hybrid MiniLM | 0.6900 | 0.4050 | 0.2867 |
+| Hybrid MiniLM + reranker | 0.7300 | 0.4300 | 0.2900 |
+
+ทั้ง 100 คำถามมี positive documents ในคลังและถูกนำมาคำนวณทั้งหมด
+
+```bash
+python scripts/evaluate_retrieval_f1.py --limit 100 \
+  --methods bm25 minilm hybrid hybrid_reranker \
+  --output results/retrieval_f1_test_100.csv
+```
+
 ## 6. การประเมินบริบท
 
 เปรียบเทียบบริบทที่ค้นพบกับ `positive_contexts` โดยใช้ `unique_key` ของเอกสาร
