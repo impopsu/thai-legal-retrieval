@@ -250,23 +250,18 @@ abstained:        0.130000
 
 ## 8. การประเมินโดยมนุษย์
 
-ผู้ประเมินสามารถให้คะแนนคำตอบที่สร้างขึ้นจำนวน 50-100 รายการ ตั้งแต่ 0 ถึง 2:
+เตรียมตัวอย่างจากคำตอบจริงไว้ใน `results/human_eval_answers_rubric.jsonl` จำนวน
+40 รายการ แบ่งจาก validation และ test ชุดละ 20 รายการ แต่ละรายการมีคำถาม
+คำตอบที่สร้าง คำตอบอ้างอิง positive contexts และ retrieved sources พร้อมช่องคะแนน
+ที่เว้นว่างไว้ให้ผู้ประเมินกรอก จึงยังไม่มีผลคะแนน human evaluation ในขณะนี้
 
-| เกณฑ์ | 0 | 1 | 2 |
-|---|---|---|---|
-| ความถูกต้องของคำตอบ | ผิด | ถูกบางส่วน | ถูกต้อง |
-| ความสอดคล้องกับหลักฐาน | ไม่มีหลักฐานรองรับ | รองรับบางส่วน | รองรับทั้งหมด |
-| ความถูกต้องของการอ้างอิง | ผิดหรือไม่มีการอ้างอิง | ถูกบางส่วน | กฎหมายและมาตราถูกต้อง |
-| ความครบถ้วน | ไม่ครบถ้วน | ครบถ้วนบางส่วน | ครบถ้วน |
-| พฤติกรรมการงดตอบ | แต่งข้อมูล | ไม่ชัดเจน | ปฏิเสธหรือให้เงื่อนไขอย่างถูกต้อง |
-
-คอลัมน์ที่แนะนำ:
-
-```text
-question, answer, retrieved_sources, answer_correctness,
-evidence_faithfulness, citation_correctness, completeness,
-abstention_behavior, notes, reviewer_id
+```bash
+python scripts/prepare_human_eval.py --sample-per-split 20 --seed 42
 ```
+
+ให้คะแนน 1-5 ในห้ามิติ: correctness, faithfulness, citation, completeness และ
+abstention ตาม [คู่มือประเมินคำตอบ](human-evaluation-guide.md) ซึ่งอธิบายเกณฑ์
+คะแนนและการพิจารณาการงดตอบ
 
 ## 9. เดโมและฮาร์ดแวร์
 
