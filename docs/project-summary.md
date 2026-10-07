@@ -132,24 +132,32 @@ Final evidence: top-5
 
 เปรียบเทียบบริบทที่ค้นพบกับ `positive_contexts` โดยใช้ `unique_key` ของเอกสาร
 
-คำสั่งรัน:
+ผลจากการประเมิน 100 คำถามต่อชุด:
+
+| Split | Configuration | Recall@1 | Recall@3 | Recall@5 | Precision@5 | MRR@5 |
+|---|---|---:|---:|---:|---:|---:|
+| Validation | Hybrid, no reranker | 0.5600 | 0.7200 | 0.7500 | 0.1840 | 0.635333 |
+| Validation | Hybrid + reranker | 0.6900 | 0.8000 | 0.8300 | 0.2060 | 0.749833 |
+| Test | Hybrid, no reranker | 0.6900 | 0.8100 | 0.8600 | 0.1720 | 0.754833 |
+| Test | Hybrid + reranker | 0.7300 | 0.8600 | 0.8700 | 0.1740 | 0.787500 |
+
+ผล validation แบบ no-reranker อยู่ใน `results/context_metrics_no_reranker.csv`;
+ผล validation แบบ reranker อยู่ใน `results/context_metrics.csv`;
+ผล test อยู่ใน `results/context_metrics_test_no_reranker.csv` และ
+`results/context_metrics_test.csv` ตาม configuration ในตาราง
+
+รัน validation แบบไม่มี reranker:
 
 ```bash
-python scripts/evaluate_context.py \
-  --questions data/processed/validation_retrieval.parquet \
-  --documents data/processed/legal_documents_categorized.csv \
-  --limit 100
+python scripts/evaluate_context.py --questions data/processed/validation_retrieval.parquet \
+  --limit 100 --no-reranker --output results/context_metrics_no_reranker.csv
 ```
 
-ผลจริงจากชุดตรวจสอบจำนวน 100 คำถาม บันทึกไว้ใน
-`results/context_metrics.csv`:
+รัน test แบบมี reranker:
 
-```text
-ContextRecall@1:     0.6900
-ContextRecall@3:     0.8000
-ContextRecall@5:     0.8300
-ContextPrecision@5:  0.2060
-ContextMRR@5:        0.749833
+```bash
+python scripts/evaluate_context.py --questions data/raw/test-00000-of-00001.parquet \
+  --limit 100 --output results/context_metrics_test.csv
 ```
 
 ## 7. การประเมินคำตอบจาก Gemini

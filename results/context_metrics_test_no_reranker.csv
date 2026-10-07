@@ -1,0 +1,2 @@
+questions,category,reranker,ContextRecall@1,ContextRecall@3,ContextRecall@5,ContextPrecision@5,ContextMRR@5
+100,all,False,0.69,0.81,0.86,0.1719999999999997,0.7548333333333334
