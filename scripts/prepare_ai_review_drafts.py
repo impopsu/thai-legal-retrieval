@@ -90,10 +90,14 @@ def prepare_answer_review(source_path, output_path):
 def prepare_category_review(source_path, output_path):
     frame = pd.read_csv(source_path, encoding="utf-8-sig")
     frame["ai_suggested_category"] = [
-        classify_category(row.law_title, row.context)
+        classify_category(
+            law_code=row.law_code,
+            section=row.section,
+            law_title=row.law_title,
+        )
         for row in frame.itertuples(index=False)
     ]
-    frame["suggestion_method"] = "rule-based classify_category(law_title, context); provisional"
+    frame["suggestion_method"] = "dataset-backed law_code + section mapping; provisional"
     frame["suggestion_matches_auto"] = (
         frame["ai_suggested_category"] == frame["auto_category"]
     ).astype(int)

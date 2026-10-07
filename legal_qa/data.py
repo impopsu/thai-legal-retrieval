@@ -22,10 +22,12 @@ def load_documents(path: str | Path) -> list[LegalDocument]:
             section=str(row.section),
             context=str(row.context),
             category=str(
-                getattr(
-                    row,
-                    "category",
-                    classify_category(row.law_title, row.context),
+                row.category
+                if "category" in dataframe.columns and pd.notna(row.category)
+                else classify_category(
+                    law_code=str(row.law_code),
+                    section=str(row.section),
+                    law_title=str(row.law_title),
                 )
             ),
         )

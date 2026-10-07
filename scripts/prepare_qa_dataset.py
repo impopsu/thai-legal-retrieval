@@ -34,9 +34,9 @@ def main() -> None:
             for context_index, item in enumerate(row["positive_contexts"]):
                 metadata = item["metadata"]
                 category = classify_category(
-                    row["question"],
-                    metadata["law_title"],
-                    item["context"],
+                    law_code=metadata["law_code"],
+                    section=metadata["section"],
+                    law_title=metadata["law_title"],
                 )
                 records.append({
                     "question_id": f"{split}-{row_index}",
