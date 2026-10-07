@@ -289,25 +289,26 @@ abstention ตาม [คู่มือประเมินคำตอบ](hu
 
 | Method | Avg latency (ms/question) | Peak RSS (MB) | Questions |
 |---|---:|---:|---:|
-| BM25 | 14.648 | 1063.469 | 100 |
-| MiniLM | 33.263 | 1677.586 | 100 |
-| Hybrid MiniLM | 53.446 | 1786.477 | 100 |
-| Hybrid MiniLM + reranker | 3456.607 | 2179.348 | 100 |
+| BM25 | 26.214 | 1118.723 | 100 |
+| MiniLM | 13.103 | 2167.488 | 100 |
+| Hybrid MiniLM | 32.826 | 2227.152 | 100 |
+| BGE-M3 | 25.913 | 3944.535 | 100 |
+| Hybrid MiniLM + reranker | 142.094 | 2398.039 | 100 |
 
-ผลจริงอยู่ใน `results/runtime_benchmark.csv` ซึ่งยังไม่มีผล BGE-M3
-การสร้าง document embeddings ของ BGE-M3 บน CPU ใช้เวลานานเกินช่วงเวลาที่รันได้
-จึงหยุดก่อนวัดคำถาม และ B1 ยังไม่เสร็จครบทุกวิธี
+ผลจริงอยู่ใน `results/runtime_benchmark.csv` วัดบน validation 100 คำถามครบทั้งห้าวิธี
+โดยนำผล BGE-M3 มารันบน Colab เนื่องจากการสร้าง embeddings บน CPU ในเครื่องนี้ใช้เวลานานเกินช่วงเวลาที่รันได้
 
 Hybrid MiniLM + reranker ยังคงเป็น configuration หลัก เพราะเลือก encoder MiniLM
-เพื่อลดภาระทรัพยากร ขณะที่ reranker เพิ่มคุณภาพการจัดอันดับตามผล retrieval ข้างต้น
-แม้ BGE-M3 จะได้ Recall สูงกว่าในตาราง retrieval แต่ runtime benchmark นี้ยังวัด
-เทียบกับ BGE-M3 ไม่สำเร็จ จึงยังไม่มีผล peak RAM/latency ที่ยืนยันขนาด trade-off นั้น
+ซึ่งมี peak RSS ต่ำกว่า BGE-M3 ใน benchmark นี้ ขณะที่ reranker เพิ่มคุณภาพการจัดอันดับ
+ตามผล retrieval ข้างต้น แม้ BGE-M3 จะได้ Recall@5 สูงกว่าในบางการเปรียบเทียบ
+แต่ใช้หน่วยความจำสูงกว่า; Hybrid+Reranker จึงเป็นจุดสมดุลด้านคุณภาพกับหน่วยความจำ
+ทั้งนี้มี latency สูงกว่า BGE-M3 ที่ไม่ใช้ reranker ตามผลในตาราง
 
-รัน benchmark สำหรับวิธีที่วัดเสร็จ:
+รัน benchmark ครบทุกวิธี:
 
 ```bash
 python scripts/benchmark_runtime.py --limit 100 \
-  --methods bm25 minilm hybrid hybrid_reranker
+  --methods bm25 minilm hybrid bge_m3 hybrid_reranker
 ```
 
 ## 10. เดโมและฮาร์ดแวร์
