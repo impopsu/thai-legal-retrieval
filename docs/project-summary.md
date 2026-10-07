@@ -282,7 +282,35 @@ python scripts/prepare_human_eval.py --sample-per-split 20 --seed 42
 abstention ตาม [คู่มือประเมินคำตอบ](human-evaluation-guide.md) ซึ่งอธิบายเกณฑ์
 คะแนนและการพิจารณาการงดตอบ
 
-## 9. เดโมและฮาร์ดแวร์
+## 9. Runtime และหน่วยความจำ
+
+วัดบน validation ชุดเดียวกัน ค่าเฉลี่ย latency นับเฉพาะการค้นหาแต่ละคำถาม
+ส่วน peak RSS รวมการโหลดเอกสาร โมเดล และ warm-up วัดแยก process ต่อวิธี:
+
+| Method | Avg latency (ms/question) | Peak RSS (MB) | Questions |
+|---|---:|---:|---:|
+| BM25 | 14.648 | 1063.469 | 100 |
+| MiniLM | 33.263 | 1677.586 | 100 |
+| Hybrid MiniLM | 53.446 | 1786.477 | 100 |
+| Hybrid MiniLM + reranker | 3456.607 | 2179.348 | 100 |
+
+ผลจริงอยู่ใน `results/runtime_benchmark.csv` ซึ่งยังไม่มีผล BGE-M3
+การสร้าง document embeddings ของ BGE-M3 บน CPU ใช้เวลานานเกินช่วงเวลาที่รันได้
+จึงหยุดก่อนวัดคำถาม และ B1 ยังไม่เสร็จครบทุกวิธี
+
+Hybrid MiniLM + reranker ยังคงเป็น configuration หลัก เพราะเลือก encoder MiniLM
+เพื่อลดภาระทรัพยากร ขณะที่ reranker เพิ่มคุณภาพการจัดอันดับตามผล retrieval ข้างต้น
+แม้ BGE-M3 จะได้ Recall สูงกว่าในตาราง retrieval แต่ runtime benchmark นี้ยังวัด
+เทียบกับ BGE-M3 ไม่สำเร็จ จึงยังไม่มีผล peak RAM/latency ที่ยืนยันขนาด trade-off นั้น
+
+รัน benchmark สำหรับวิธีที่วัดเสร็จ:
+
+```bash
+python scripts/benchmark_runtime.py --limit 100 \
+  --methods bm25 minilm hybrid hybrid_reranker
+```
+
+## 10. เดโมและฮาร์ดแวร์
 
 เดโมบนบรรทัดคำสั่ง:
 
@@ -305,7 +333,7 @@ python scripts/check_hardware.py
 
 สภาพแวดล้อมปัจจุบันไม่มี NVIDIA CUDA GPU จึงใช้ CPU เป็นทางเลือกสำรอง
 
-## 10. ข้อจำกัด
+## 11. ข้อจำกัด
 
 - ป้ายกำกับหมวดหมู่สร้างจากกฎ ไม่ใช่ป้ายกำกับอ้างอิง
 - การประเมินคำตอบใช้ตัวอย่างชุดตรวจสอบและชุดทดสอบอย่างละ 100 คำถาม
@@ -313,7 +341,7 @@ python scripts/check_hardware.py
   ระบบควรงดตอบเมื่อหลักฐานไม่เกี่ยวข้องอย่างชัดเจน
 - ยังแนะนำให้มีผู้เชี่ยวชาญด้านกฎหมายประเมิน เพื่อสนับสนุนข้อสรุปด้านระบบถามตอบกฎหมายให้หนักแน่นขึ้น
 
-## 11. โครงสร้างรายงาน
+## 12. โครงสร้างรายงาน
 
 1. นิยามปัญหา
 2. ชุดข้อมูลและงานที่เกี่ยวข้อง
