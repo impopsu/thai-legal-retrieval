@@ -87,6 +87,12 @@ python scripts/run_qa_demo.py --category property
 python scripts/run_web_demo.py --documents data/processed/legal_documents_categorized.csv
 ```
 
+เตรียมตัวอย่างสำหรับตรวจหมวดด้วยคนไว้ใน
+`results/category_accuracy_check.csv` โดยสุ่มไม่เกิน 30 มาตราต่อ auto-category
+และใส่ครบทุกมาตราในหมวดที่มีน้อยกว่า ช่อง `human_category` และ `correct`
+ยังว่างเพื่อรอผู้ตรวจ จึงยังไม่มีค่า accuracy ที่ยืนยันโดยมนุษย์
+ดูขั้นตอนและวิธีสรุป accuracy ได้ใน [คู่มือตรวจหมวดกฎหมาย](category-review-guide.md)
+
 ## 4. การตั้งค่าการค้นหาขั้นสุดท้าย
 
 ```text
