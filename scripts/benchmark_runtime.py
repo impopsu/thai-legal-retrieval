@@ -17,6 +17,46 @@ from legal_qa.reranking import CrossEncoderReranker
 
 FINAL_RERANKER_MODEL = "cross-encoder/mmarco-mMiniLMv2-L12-H384-v1"
 METHODS = ("bm25", "minilm", "hybrid", "bge_m3", "hybrid_reranker")
+REPO_ROOT = Path(__file__).resolve().parents[1]
+REQUIRED_DOCUMENT_COLUMNS = {
+    "unique_key",
+    "law_code",
+    "law_title",
+    "section",
+    "context",
+}
+
+
+def _resolve_project_path(value):
+    path = Path(value).expanduser()
+    if not path.is_absolute():
+        path = REPO_ROOT / path
+    return path.resolve()
+
+
+def _resolve_and_validate_paths(args):
+    for name in (
+        "documents",
+        "questions",
+        "minilm_embeddings",
+        "bge_embeddings",
+        "output",
+    ):
+        setattr(args, name, str(_resolve_project_path(getattr(args, name))))
+
+    for name in ("documents", "questions"):
+        path = Path(getattr(args, name))
+        if not path.is_file():
+            raise FileNotFoundError(f"Input file does not exist: {path}")
+
+    columns = set(pd.read_csv(args.documents, encoding="utf-8-sig", nrows=0).columns)
+    missing = REQUIRED_DOCUMENT_COLUMNS - columns
+    if missing:
+        raise ValueError(
+            f"Invalid documents CSV: {args.documents}\n"
+            f"Missing columns: {sorted(missing)}\n"
+            f"Found columns: {sorted(columns)}"
+        )
 
 
 class PeakRssMonitor:
@@ -154,6 +194,7 @@ def main():
     parser.add_argument("--reranker-batch-size", type=int, default=8)
     parser.add_argument("--output", default="results/runtime_benchmark.csv")
     args = parser.parse_args()
+    _resolve_and_validate_paths(args)
 
     if args.worker:
         print(json.dumps(_run_worker(args.worker, args)))
