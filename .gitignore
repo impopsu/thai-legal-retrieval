@@ -64,6 +64,7 @@ temp/
 # Keep result/evaluation files (deliverables, not temp/cache)
 !results/*.csv
 !results/*.jsonl
+!results/*.pt
 
 # Old/temporary QA files not needed as final deliverables
 results/qa_predictions.jsonl

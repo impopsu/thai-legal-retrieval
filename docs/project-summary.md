@@ -205,16 +205,40 @@ python scripts/evaluate_answers.py \
   --output results/answer_metrics_validation_100.csv
 ```
 
-ไฟล์คำตอบ validation และ test จำนวน 100 คำถามสร้างสำเร็จครบชุดละ 100/100 รายการ
-โดยไม่มีข้อผิดพลาด ตัวเลขทั้งสองชุดสร้างด้วย API key ที่ป้อนแบบซ่อนค่าและไม่ได้
-บันทึกลง repository ตัวเลขชุดหลักใน
-`results/answer_metrics.csv` มาจากคำตอบที่สำเร็จเพียง 13 จาก 100 รายการ และมี
-ค่า F1 เฉลี่ย 0.032906, ROUGE-1 0.032906, ROUGE-2 0.021367 และ ROUGE-L 0.027276
-เนื่องจากอีก 87 รายการเป็นข้อผิดพลาดจากโควต้าเดิม
+จากการประเมินจริงบนไฟล์ที่มีอยู่แล้ว `results/qa_predictions_validation_100.jsonl`
+มี 200 บรรทัดทั้งหมด ประกอบด้วย 100 บรรทัดที่มี `status=error` และ 100 บรรทัดที่
+ประสบความสำเร็จ แล้วจึงถูกประเมินต่อ. หลัง filter รายการที่ไม่สำเร็จออกแล้ว
+script `scripts/evaluate_answers.py` ประเมินได้ 100 คำถาม โดยบันทึกผลลง
+`results/answer_metrics_validation_100.csv` พร้อมตัวชี้วัด:
 
-เครื่องมือสร้างคำตอบรองรับการลองใหม่พร้อมหน่วงเวลา การทำงานต่อจากรายการเดิม
-และการบันทึกข้อผิดพลาด โดยอ่าน API key จาก `GEMINI_API_KEY` เท่านั้น
-และไม่จัดเก็บไว้ใน repository
+```text
+answer_token_f1: 0.395647
+rouge1:           0.395647
+rouge2:           0.281292
+rougeL:           0.302869
+citation_correct: 0.640000
+abstained:        0.280000
+```
+
+สำหรับชุดทดสอบ `results/qa_predictions_test_100.jsonl` มี 100 บรรทัดทั้งหมดและ
+ประเมินสำเร็จครบ 100/100 รายการ โดยผลจริงใน `results/answer_metrics_test_100.csv`
+คือ:
+
+```text
+answer_token_f1: 0.487709
+rouge1:           0.487709
+rouge2:           0.390759
+rougeL:           0.371400
+citation_correct: 0.800000
+abstained:        0.130000
+```
+
+ประวัติการเรียก model ที่ใช้จริงคือมีการลองใช้ model เดิม `gemini-2.5-flash-lite`
+ซึ่ง Google ปิดใช้งานสำหรับผู้ใช้ใหม่ ทำให้ได้รับ HTTP 404 จากชื่อ model เดิม
+จากนั้นจึง retry ชุด validation ด้วย `gemini-3.5-flash-lite` และได้ผลสำเร็จครบ
+100/100 ตาม 100 บรรทัด success ในไฟล์ข้างต้น. ไฟล์คำตอบและ metrics ที่ระบุในหัวข้อนี้
+ถูกเก็บไว้ใน `results/` และ tracked ใน repository แล้ว. เครื่องมือสร้างคำตอบอ่านค่า
+`GEMINI_API_KEY` เท่านั้น และไม่จัดเก็บค่า API ลง repository
 
 ## 8. การประเมินโดยมนุษย์
 
