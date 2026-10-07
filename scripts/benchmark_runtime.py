@@ -49,6 +49,14 @@ def _resolve_and_validate_paths(args):
         if not path.is_file():
             raise FileNotFoundError(f"Input file does not exist: {path}")
 
+    with Path(args.documents).open(encoding="utf-8-sig") as file:
+        first_line = file.readline().strip()
+    if first_line == "version https://git-lfs.github.com/spec/v1":
+        raise ValueError(
+            f"Documents file is a Git LFS pointer, not the CSV data: {args.documents}\n"
+            "Install Git LFS and fetch repository data with `git lfs pull`."
+        )
+
     columns = set(pd.read_csv(args.documents, encoding="utf-8-sig", nrows=0).columns)
     missing = REQUIRED_DOCUMENT_COLUMNS - columns
     if missing:
